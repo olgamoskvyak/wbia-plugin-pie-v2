@@ -1,0 +1,12 @@
+efficientnet-pytorch
+matplotlib
+numpy
+scikit-image
+tensorboardX
+torch==1.7
+torchvision==0.8
+tqdm
+wbia-utool
+wbia-utool
+wildbook-ia
+yacs
