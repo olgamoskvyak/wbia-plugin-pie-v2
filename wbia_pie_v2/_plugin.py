@@ -6,6 +6,7 @@ from wbia.constants import CONTAINERIZED, PRODUCTION  # NOQA
 import numpy as np
 import utool as ut
 import wbia
+from wbia import dtool as dt
 import os
 import torch
 import torchvision.transforms as transforms  # noqa: E402
@@ -15,7 +16,7 @@ from wbia_pie_v2.default_config import get_default_config
 from wbia_pie_v2.datasets import AnimalNameWbiaDataset  # noqa: E402
 from wbia_pie_v2.metrics import eval_onevsall
 from wbia_pie_v2.models import build_model
-from wbia_pie_v2.utils import read_json
+from wbia_pie_v2.utils import read_json, load_pretrained_weights
 from wbia_pie_v2.metrics import pred_light
 
 (print, rrr, profile) = ut.inject2(__name__)
@@ -27,6 +28,7 @@ register_route = controller_inject.get_wbia_flask_route(__name__)
 
 register_preproc_image = controller_inject.register_preprocs['image']
 register_preproc_annot = controller_inject.register_preprocs['annot']
+
 
 DEMO_DB_URL = {
     'whale_shark': 'https://www.dropbox.com/s/xwac8lyyua5jw3o/whale_shark_cropped_demo.zip?dl=1'
@@ -44,91 +46,66 @@ MODEL_URLS = {
 
 
 @register_ibs_method
-def pie_embedding(ibs, aid_list, species=None, use_depc=True):
+def pie_embedding(ibs, aid_list, config, use_depc=True):
     r"""
     Generate embeddings using the Pose-Invariant Embedding (PIE)
     Args:
         ibs (IBEISController): IBEIS / WBIA controller object
         aid_list  (int): annot ids specifying the input
-        species (string): name of species category.
-                If None, use category of the first annotation. Default: None
         use_depc (bool): use dependency cache
     CommandLine:
         python -m wbia_pie_v2._plugin pie_embedding
     Example:
         >>> # ENABLE_DOCTEST
-        >>> import wbia
         >>> import wbia_pie_v2
         >>> demo_db_url = 'https://www.dropbox.com/s/xwac8lyyua5jw3o/whale_shark_cropped_demo.zip?dl=1'
+        >>> config = 'https://www.dropbox.com/s/6wvkrf319lhwhug/pie_v2.whale_shark.20210304.yaml?dl=1'
         >>> species = 'whale_shark'
-        >>> subset = 'test2021'
-        >>> test_ibs = wbia_pie_v2_test_ibs(demo_db_url, species, subset)
+        >>> test_ibs = wbia_pie_v2._plugin.wbia_pie_v2_test_ibs(demo_db_url, species, 'test2021')
         >>> aid_list = test_ibs.get_valid_aids(species=species)
-        >>> embs_depc    = np.array(ibs.pie_embedding(aids, use_depc=True))
-        >>> embs_no_depc = np.array(ibs.pie_embedding(aids, use_depc=False))
-        >>> diffs = np.abs(embs_depc - embs_no_depc)
-        >>> assert diffs.max() < 1e-8
-        >>> # each embedding is 512 floats long so we'll just check a bit
-        >>> annot_uuids = ibs.get_annot_semantic_uuids(aids)
-        >>> wanted_uuid = uuid.UUID('588dc49a-9b7f-d362-1667-1f9f002cd566')
-        >>> wanted_index = annot_uuids.index(wanted_uuid)
-        >>> assert wanted_index is not None and wanted_index in list(range(len(aids)))
-        >>> result = embs_depc[wanted_index][:20]
-        >>> result_ = np.array([-0.03839333,  0.01182338,  0.02393869, -0.07164327, -0.04367629,
-        >>>                     -0.00150531,  0.01324393,  0.10909598,  0.02349781,  0.08439559,
-        >>>                     -0.06415793,  0.0110384 ,  0.03897202, -0.11256221,  0.00709192,
-        >>>                      0.10403764,  0.00615681, -0.10405623,  0.0320793 , -0.0394897 ])
-        >>> assert result.shape == result_.shape
-        >>> diffs = np.abs(result - result_)
-        >>> assert diffs.max() < 1e-5
-    Example:
-        >>> # ENABLE_DOCTEST
-        >>> # This tests that an aid's embedding is independent of the other aids processed in the same call
-        >>> import wbia_pie_v2
-        >>> ibs = wbia_pie_v2._plugin.pie_testdb_ibs()
-        >>> aids = ibs.get_valid_aids(species='Mobula birostris')
-        >>> aids1 = aids[:-1]
-        >>> aids2 = aids[1:]
-        >>> embs1 = ibs.pie_compute_embedding(aids1)
-        >>> embs2 = ibs.pie_compute_embedding(aids2)
-        >>> # just look at the overlapping aids/embs
-        >>> embs1 = np.array(embs1[1:])
-        >>> embs2 = np.array(embs2[:-1])
-        >>> compare_embs = np.abs(embs1 - embs2)
-        >>> assert compare_embs.max() < 1e-8
+        >>> rank1 = wbia_pie_v2._plugin.evaluate_distmat(test_ibs, aid_list, config, use_depc=False)
+        >>> expected_rank1 = 0.81366
+        >>> assert abs(rank1 - expected_rank1) < 1e-3
     """
 
     if use_depc:
-        embeddings = ibs.depc_annot.get('PiePytorchEmbedding', aid_list, 'embedding')
+        config_map = {'config_path': config}
+        embeddings = ibs.depc_annot.get('PieEmbedding', aid_list, 'embedding', config_map)
     else:
-        embeddings = pie_compute_embedding(ibs, aid_list)
+        embeddings = pie_compute_embedding(ibs, aid_list, config)
     return embeddings
 
 
+class PieEmbeddingConfig(dt.Config):  # NOQA
+    _param_info_list = [
+        ut.ParamInfo('config_path', ''),
+    ]
+
+
 @register_preproc_annot(
-    tablename='PiePytorchEmbedding',
+    tablename='PieEmbedding',
     parents=[ANNOTATION_TABLE],
     colnames=['embedding'],
     coltypes=[np.ndarray],
+    configclass=PieEmbeddingConfig,
     fname='pie_v2',
     chunksize=128,
 )
 @register_ibs_method
 def pie_embedding_depc(depc, aid_list, config):
     ibs = depc.controller
-    embs = pie_compute_embedding(ibs, aid_list)
+    embs = pie_compute_embedding(ibs, aid_list, config)
     for aid, emb in zip(aid_list, embs):
         yield (np.array(emb),)
 
 
 @register_ibs_method
-def pie_compute_embedding(ibs, aid_list, species=None, use_gpu=False):
-    # Get species from the first annotation if not specified
-    if species is None:
-        species = ibs.get_annot_species_texts(aid_list[0])
+def pie_compute_embedding(ibs, aid_list, config):
+    # Get species from the first annotation
+    species = ibs.get_annot_species_texts(aid_list[0])
 
     # Load config
-    cfg = _load_config(species, use_gpu)
+    cfg = _load_config(config)
 
     # Load model
     model = _load_model(cfg, MODEL_URLS[species])
@@ -151,11 +128,31 @@ def pie_compute_embedding(ibs, aid_list, species=None, use_gpu=False):
     return embeddings
 
 
-def _load_config(species, use_gpu):
-    r"""
-    Load a configuration file for species
+@register_ibs_method
+def evaluate_distmat(ibs, aid_list, config, use_depc, ranks=[1, 5, 10, 20]):
+    """Evaluate 1vsall accuracy of matching on annotations by
+    computing distance matrix.
     """
-    config_url = CONFIGS[species]
+
+    embs = np.array(pie_embedding(ibs, aid_list, config, use_depc))
+    print('Computing distance matrix ...')
+    distmat = distance_matrix(embs, embs)
+
+    print('Computing ranks ...')
+    db_labels = np.array(ibs.get_annot_name_rowids(aid_list))
+    cranks, mAP = eval_onevsall(distmat, db_labels)
+
+    print('** Results **')
+    # print('mAP: {:.1%}'.format(mAP))
+    for r in ranks:
+        print('Rank-{:<3}: {:.1%}'.format(r, cranks[r - 1]))
+    return cranks[0]
+
+
+def _load_config(config_url):
+    r"""
+    Load a configuration file
+    """
     config_fname = config_url.split('/')[-1]
     config_file = ut.grab_file_url(
         config_url, appname='wbia_pie_v2', check_hash=True, fname=config_fname
@@ -190,14 +187,17 @@ def _load_model(cfg, model_url=None):
         )
     else:
         # TODO remove this after config is uploaded to public server
-        model_path = 'wbia_pie_v2/reid-data/temp_data/model.pth.tar-200_cpu'
+        model_path = (
+            'wbia_pie_v2/reid-data/temp_data/whale_shark_cropped_model_20210315.pth.tar'
+        )
 
-    if cfg.use_gpu:
-        model.load_state_dict(torch.load(model_path))
-    else:
-        model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+    load_pretrained_weights(model, model_path)
 
-    print('Loaded model from {}'.format(model_path))
+    # if cfg.use_gpu:
+    #    model.load_state_dict(torch.load(model_path))
+    # else:
+    #    model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+    # print('Loaded model from {}'.format(model_path))
     if cfg.use_gpu:
         model = torch.nn.DataParallel(model).cuda()
     return model
@@ -251,6 +251,8 @@ def wbia_pie_v2_test_ibs(demo_db_url, species, subset):
     else:
         # Download demo data archive
         db_dir = ut.grab_zipped_url(demo_db_url, appname='wbia_pie_v2')
+        # TODO remore db_dir
+        db_dir = '/home/olga.moskvyak/.cache/wbia_pie_v2/whale_shark_cropped_demo'
         # Load coco annotations
         json_file = os.path.join(
             db_dir, 'annotations', 'instances_{}.json'.format(subset)
@@ -279,24 +281,6 @@ def wbia_pie_v2_test_ibs(demo_db_url, species, subset):
         )
 
         return test_ibs
-
-
-@register_ibs_method
-def evaluate_1vsall_distmat(ibs, aid_list, species, use_gpu, ranks=[1, 5, 10, 20]):
-
-    embs = np.array(pie_embedding(ibs, aid_list, species, use_gpu))
-    print('Computing distance matrix ...')
-    distmat = distance_matrix(embs, embs)
-
-    print('Computing ranks ...')
-    db_labels = np.array(ibs.get_annot_name_rowids(aid_list))
-    cranks, mAP = eval_onevsall(distmat, db_labels, db_labels, use_sids=False)
-
-    print('** Results **')
-    # print('mAP: {:.1%}'.format(mAP))
-    for r in ranks:
-        print('Rank-{:<3}: {:.1%}'.format(r, cranks[r - 1]))
-    return cranks[0]
 
 
 # The following functions are copied from PIE v1
@@ -424,7 +408,7 @@ def _invert_dict(d):
 if __name__ == '__main__':
     r"""
     CommandLine:
-        python -m wbia_orientation._plugin --allexamples
+        python -m wbia_pie_v2._plugin --allexamples
     """
     import multiprocessing
 
