@@ -1,25 +1,21 @@
 # -*- coding: utf-8 -*-
 """
-Code source: https://github.com/KaiyangZhou/deep-person-reid
+Adapted from: https://github.com/KaiyangZhou/deep-person-reid
 """
 from __future__ import division, print_function, absolute_import
 import time
-import numpy as np
 import os.path as osp
 import datetime
 from collections import OrderedDict
 import torch
-from torch.nn import functional as F
 from torch.utils.tensorboard import SummaryWriter
 
-import metrics
 from utils import (
     MetricMeter,
     AverageMeter,
     open_all_layers,
     save_checkpoint,
     open_specified_layers,
-    visualize_ranked_results,
 )
 from losses import DeepSupervision
 
@@ -184,6 +180,8 @@ class Engine(object):
         self.start_epoch = start_epoch
         self.max_epoch = max_epoch
         print('=> Start training')
+        is_best = False
+        best_rank1 = 0.0
 
         for self.epoch in range(self.start_epoch, self.max_epoch):
             self.train(
@@ -204,10 +202,14 @@ class Engine(object):
                     visrank=visrank,
                     visrank_topk=visrank_topk,
                     save_dir=save_dir,
-                    use_metric_cuhk03=use_metric_cuhk03,
                     ranks=ranks,
                 )
-                self.save_model(self.epoch, rank1, save_dir)
+                if rank1 > best_rank1:
+                    best_rank1 = rank1
+                    is_best = True
+                else:
+                    is_best = False
+                self.save_model(self.epoch, rank1, save_dir, is_best=is_best)
 
         if self.max_epoch > 0:
             print('=> Final test')
@@ -217,10 +219,9 @@ class Engine(object):
                 visrank=visrank,
                 visrank_topk=visrank_topk,
                 save_dir=save_dir,
-                use_metric_cuhk03=use_metric_cuhk03,
                 ranks=ranks,
             )
-            self.save_model(self.epoch, rank1, save_dir)
+            self.save_model(self.epoch, rank1, save_dir, is_best=is_best)
 
         elapsed = round(time.time() - time_start)
         elapsed = str(datetime.timedelta(seconds=elapsed))
