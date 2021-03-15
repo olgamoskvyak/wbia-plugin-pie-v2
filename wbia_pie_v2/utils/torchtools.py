@@ -57,7 +57,10 @@ def save_checkpoint(state, save_dir, is_best=False, remove_module_from_keys=Fals
     torch.save(state, fpath)
     print('Checkpoint saved to "{}"'.format(fpath))
     if is_best:
-        shutil.copy(fpath, osp.join(osp.dirname(fpath), 'model-best.pth.tar'))
+        shutil.copy(fpath, osp.join(osp.dirname(fpath), 'state-best.pth.tar'))
+        torch.save(
+            state['state_dict'], osp.join(osp.dirname(fpath), 'model-best.pth.tar')
+        )
 
 
 def load_checkpoint(fpath):
