@@ -31,15 +31,6 @@ def save_checkpoint(state, save_dir, is_best=False, remove_module_from_keys=Fals
             ``model-best.pth.tar``. Default is False.
         remove_module_from_keys (bool, optional): whether to remove "module."
             from layer names. Default is False.
-
-    Examples::
-        >>> state = {
-        >>>     'state_dict': model.state_dict(),
-        >>>     'epoch': 10,
-        >>>     'rank1': 0.5,
-        >>>     'optimizer': optimizer.state_dict()
-        >>> }
-        >>> save_checkpoint(state, 'log/my_model')
     """
     os.makedirs(save_dir, exist_ok=True)
     if remove_module_from_keys:
