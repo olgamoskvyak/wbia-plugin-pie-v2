@@ -44,7 +44,7 @@ MODELS = {
 
 
 @register_ibs_method
-def pie_embedding(ibs, aid_list, config, use_depc=True):
+def pie_embedding(ibs, aid_list, config=None, use_depc=False):
     r"""
     Generate embeddings using the Pose-Invariant Embedding (PIE)
     Args:
@@ -60,11 +60,11 @@ def pie_embedding(ibs, aid_list, config, use_depc=True):
         >>> species = 'whale_shark'
         >>> test_ibs = wbia_pie_v2._plugin.wbia_pie_v2_test_ibs(DEMOS[species], species, 'test2021')
         >>> aid_list = test_ibs.get_valid_aids(species=species)
-        >>> rank1 = wbia_pie_v2._plugin.evaluate_distmat(test_ibs, aid_list, CONFIGS[species], use_depc=False)
+        >>> rank1 = test_ibs.evaluate_distmat(aid_list, CONFIGS[species], use_depc=False)
         >>> expected_rank1 = 0.81366
-        >>> assert abs(rank1 - expected_rank1) < 1e-3
-    """
+        >>> assert abs(rank1 - expected_rank1) < 1e-2
 
+    """
     if use_depc:
         config_map = {'config_path': config}
         embeddings = ibs.depc_annot.get('PieEmbedding', aid_list, 'embedding', config_map)
@@ -89,7 +89,7 @@ class PieEmbeddingConfig(dt.Config):  # NOQA
     chunksize=128,
 )
 @register_ibs_method
-def pie_embedding_depc(depc, aid_list, config):
+def pie_embedding_depc(depc, aid_list, config=None):
     ibs = depc.controller
     embs = pie_compute_embedding(ibs, aid_list, config)
     for aid, emb in zip(aid_list, embs):
@@ -97,11 +97,13 @@ def pie_embedding_depc(depc, aid_list, config):
 
 
 @register_ibs_method
-def pie_compute_embedding(ibs, aid_list, config):
+def pie_compute_embedding(ibs, aid_list, config=None):
     # Get species from the first annotation
     species = ibs.get_annot_species_texts(aid_list[0])
 
     # Load config
+    if config is None:
+        config = CONFIGS[species]
     cfg = _load_config(config)
 
     # Load model
@@ -225,7 +227,6 @@ def _load_data(ibs, aid_list, cfg):
     return dataloader, dataset
 
 
-@register_ibs_method
 def wbia_pie_v2_test_ibs(demo_db_url, species, subset):
     r"""
     Create a database to test orientation detection from a coco annotation file
@@ -269,9 +270,9 @@ def wbia_pie_v2_test_ibs(demo_db_url, species, subset):
         return test_ibs
 
 
-# The following functions are copied from PIE v1
+# The following functions are copied from PIE v1 because these functions
+# are agnostic tot eh method of computing embeddings:
 # https://github.com/WildMeOrg/wbia-plugin-pie/wbia_pie/_plugin.py
-# These functions are agnistic to the method of computing embeddings
 
 
 def _db_labels_for_pie(ibs, daid_list):
