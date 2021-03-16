@@ -26,7 +26,7 @@ from default_config import (
 )
 
 import optim
-from engine import TripletPIEEngine, TripletCenterPIEEngine
+from engine import TripletPIEEngine
 from models import build_model
 from datasets.datamanager import AnimalImageDataManager
 
@@ -100,31 +100,17 @@ def main():
         )
 
     print('Building {}-engine for {}-reid'.format(cfg.loss.name, cfg.data.type))
-    if cfg.loss.name == 'triplet':
-        engine = TripletPIEEngine(
-            datamanager,
-            model,
-            optimizer=optimizer,
-            margin=cfg.loss.triplet.margin,
-            weight_t=cfg.loss.triplet.weight_t,
-            weight_x=cfg.loss.triplet.weight_x,
-            scheduler=scheduler,
-            use_gpu=cfg.use_gpu,
-            label_smooth=cfg.loss.softmax.label_smooth,
-        )
-    elif cfg.loss.name == 'triplet_center':
-        engine = TripletCenterPIEEngine(
-            datamanager,
-            model,
-            optimizer=optimizer,
-            margin=cfg.loss.triplet.margin,
-            weight_t=cfg.loss.triplet.weight_t,
-            weight_x=cfg.loss.triplet.weight_x,
-            weight_c=cfg.loss.triplet.weight_c,
-            scheduler=scheduler,
-            use_gpu=cfg.use_gpu,
-            label_smooth=cfg.loss.softmax.label_smooth,
-        )
+    engine = TripletPIEEngine(
+        datamanager,
+        model,
+        optimizer=optimizer,
+        margin=cfg.loss.triplet.margin,
+        weight_t=cfg.loss.triplet.weight_t,
+        weight_x=cfg.loss.triplet.weight_x,
+        scheduler=scheduler,
+        use_gpu=cfg.use_gpu,
+        label_smooth=cfg.loss.softmax.label_smooth,
+    )
 
     engine.run(**engine_run_kwargs(cfg), save_dir=save_dir)
 
