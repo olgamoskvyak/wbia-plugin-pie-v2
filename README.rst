@@ -126,32 +126,15 @@ Dependencies
 ~~~~~~~~~~~~~
 * Python >= 3.7
 * PyTorch >= 1.5
-* Torchvision =- 0.8
+* Torchvision >= 0.8
 
 Source Data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Data used for training and evaluation:
-
- * whale shark (whole body)
- * whale shark (cropped)
- * show leopards
 
 Key annotations required:
 
-* bounding box containing a region of interest
-* name of an animal individual
-* viewpoint (left or right side for sharks)
-
-Viewpoint is an important parameter as left and right sides are different and
-are considered as different identities for matching.
-Identity label is a concatenation of name and viewpoint.
-
-Data preprocessing
-~~~~~~~~~~~~~~~~~~
-
-Each dataset is preprocessed to speed-up image loading during training. At the first time of running a training or a testing script on a dataset the following operations are applied:
- * an object is cropped by boudnding box from annotations;
- * an image is resized so the smaller side is equal to the double size of a model input; the aspect ratio is preserved.
+* bounding box containing a pattern of interest
+* unique name of an animal individual
 
 Training
 ~~~~~~~~~~~~
@@ -163,7 +146,7 @@ Run the training script:
     cd wbia_pie_v2
     python train.py --cfg <path_to_config_file> <additional_optional_params>
 
-Configuration files are listed in `wbia_pie_v2/configs` folder. For example, the following line trains the model with parameters specified in the config file:
+Configuration files are listed in ``wbia_pie_v2/configs`` folder. For example, the following line trains the model with parameters specified in the config file:
 
 .. code:: bash
 
@@ -176,9 +159,9 @@ To override a parameter in config, add this parameter as a command line argument
 
     python train.py --cfg configs/01_whaleshark_cropped_resnet50.yaml train.batch_size 48
 
-To evaluate a model on the test subset, set the parameter `test.evaluate True` and
-parameter `test.visrank True` to visualize results. Provide the path to the model.
-
+To evaluate a model on the test subset, set the parameter ``test.evaluate True`` and
+parameter ``test.visrank True`` to visualize results.
+Provide a path to the model saved during training.
 For example:
 
 .. code:: bash

@@ -13,6 +13,7 @@ During evaluation, each image is matched against the rest so each query image ha
 Accuracy
 ==========
 Accuracy of retrieval 1-vs-all is reported.
+Rank-k means that a correct match is returned within top-k predictions.
 
 +----------------------+---------------+--------------+--------------+--------------+
 | Dataset              |    Rank 1     |    Rank 5    |    Rank 10   |    Rank 20   |
@@ -33,6 +34,8 @@ Whale Shark cropped
 
 First image in each row is a query image.
 The next five images are the top-5 retrieved mathces from the test set.
+
+Green border - correct match, red border - incorrect match.
 
 .. figure:: ../examples/000000000019_0.jpg
    :align: center
