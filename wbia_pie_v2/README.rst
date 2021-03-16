@@ -6,15 +6,12 @@ Quantitative results
 ---------------------
 
 `Cropped whale shark test set <https://wildbookiarepository.azureedge.net/data/pie_v2.whale_shark_cropped_demo.zip>`_
-has images with between 2 and 5 images per unique shark pattern
-(combination name/viepoint) with total 333 unique names.
+contains unique shark patterns with 2 to 5 sightings per pattern and a total of 333 unique patterns.
 The selecting test subset is challenging as each query image has at most 4 matches.
-Accuracy of retrieval 1-vs-all is reported.
 
 Accuracy
 ==========
-
-Accuracy of predicting an angle of orientation on **a test set** at **10, 15 and 20 degrees thresholds**:
+Accuracy of retrieval 1-vs-all is reported.
 
 +----------------------+---------------+--------------+--------------+--------------+
 | Dataset              |    Rank 1     |    Rank 5    |    Rank 10   |    Rank 20   |
@@ -35,5 +32,20 @@ Whale Shark cropped
 
 Green is an axis-aligned box, Red is a detected object-aligned box. Yellow side indicates a detected front of the animal.
 
-.. figure:: ../examples/whaleshark_bboxes_1.jpg
+.. figure:: ../examples/000000000019_0.jpg
+   :align: center
+
+.. figure:: ../examples/000000000050_0.jpg
+   :align: center
+
+.. figure:: ../examples/000000000104_0.jpg
+   :align: center
+
+.. figure:: ../examples/000000000127_0.jpg
+   :align: center
+
+.. figure:: ../examples/000000000142_0.jpg
+   :align: center
+
+.. figure:: ../examples/000000000182_0.jpg
    :align: center
