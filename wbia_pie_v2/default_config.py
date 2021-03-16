@@ -159,7 +159,6 @@ def engine_run_kwargs(cfg):
         'normalize_feature': cfg.test.normalize_feature,
         'visrank': cfg.test.visrank,
         'visrank_topk': cfg.test.visrank_topk,
-        'use_metric_cuhk03': False,
         'ranks': cfg.test.ranks,
         'rerank': cfg.test.rerank,
     }

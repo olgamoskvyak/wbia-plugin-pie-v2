@@ -122,7 +122,6 @@ class Engine(object):
         normalize_feature=False,
         visrank=False,
         visrank_topk=10,
-        use_metric_cuhk03=False,
         ranks=[1, 5, 10, 20],
         rerank=False,
     ):
@@ -150,8 +149,6 @@ class Engine(object):
                 enable ``visrank`` when ``test_only`` is True. The ranked images will be saved to
                 "save_dir/visrank_dataset", e.g. "save_dir/visrank_market1501".
             visrank_topk (int, optional): top-k ranked images to be visualized. Default is 10.
-            use_metric_cuhk03 (bool, optional): use single-gallery-shot setting for cuhk03.
-                Default is False. This should be enabled when using cuhk03 classic split.
             ranks (list, optional): cmc ranks to be computed. Default is [1, 5, 10, 20].
             rerank (bool, optional): uses person re-ranking (by Zhong et al. CVPR'17).
                 Default is False. This is only enabled when test_only=True.
@@ -167,7 +164,6 @@ class Engine(object):
                 visrank=visrank,
                 visrank_topk=visrank_topk,
                 save_dir=save_dir,
-                use_metric_cuhk03=use_metric_cuhk03,
                 ranks=ranks,
                 rerank=rerank,
             )
