@@ -6,8 +6,9 @@ Quantitative results
 ---------------------
 
 `Cropped whale shark test set <https://wildbookiarepository.azureedge.net/data/pie_v2.whale_shark_cropped_demo.zip>`_
-contains unique shark patterns with 2 to 5 sightings per pattern and a total of 333 unique patterns.
-The selecting test subset is challenging as each query image has at most 4 matches.
+contains 333 unique spot patterns.
+Each pattern have from 2 to 5 sightings.
+During evaluation, each image is matched against the rest so each query image has at most 4 matches.
 
 Accuracy
 ==========
@@ -30,7 +31,8 @@ Qualitative results
 Whale Shark cropped
 ====================
 
-Green is an axis-aligned box, Red is a detected object-aligned box. Yellow side indicates a detected front of the animal.
+First image in each row is a query image.
+The next five images are the top-5 retrieved mathces from the test set.
 
 .. figure:: ../examples/000000000019_0.jpg
    :align: center
