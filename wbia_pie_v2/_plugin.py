@@ -30,18 +30,16 @@ register_preproc_image = controller_inject.register_preprocs['image']
 register_preproc_annot = controller_inject.register_preprocs['annot']
 
 
-DEMO_DB_URL = {
-    'whale_shark': 'https://www.dropbox.com/s/xwac8lyyua5jw3o/whale_shark_cropped_demo.zip?dl=1'
+DEMOS = {
+    'whale_shark': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_shark_cropped_demo.zip'
 }
 
-# TODO: upload config to public server
 CONFIGS = {
-    'whale_shark': 'https://www.dropbox.com/s/6wvkrf319lhwhug/pie_v2.whale_shark.20210304.yaml?dl=1',
+    'whale_shark': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark.20210315.yaml',
 }
 
-# TODO: upload models to public server
-MODEL_URLS = {
-    'whale_shark': None,
+MODELS = {
+    'whale_shark': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark_cropped_model_20210315.pth.tar',
 }
 
 
@@ -58,12 +56,11 @@ def pie_embedding(ibs, aid_list, config, use_depc=True):
     Example:
         >>> # ENABLE_DOCTEST
         >>> import wbia_pie_v2
-        >>> demo_db_url = 'https://www.dropbox.com/s/xwac8lyyua5jw3o/whale_shark_cropped_demo.zip?dl=1'
-        >>> config = 'https://www.dropbox.com/s/6wvkrf319lhwhug/pie_v2.whale_shark.20210304.yaml?dl=1'
+        >>> from wbia_pie_v2._plugin import DEMOS, CONFIGS, MODELS
         >>> species = 'whale_shark'
-        >>> test_ibs = wbia_pie_v2._plugin.wbia_pie_v2_test_ibs(demo_db_url, species, 'test2021')
+        >>> test_ibs = wbia_pie_v2._plugin.wbia_pie_v2_test_ibs(DEMOS[species], species, 'test2021')
         >>> aid_list = test_ibs.get_valid_aids(species=species)
-        >>> rank1 = wbia_pie_v2._plugin.evaluate_distmat(test_ibs, aid_list, config, use_depc=False)
+        >>> rank1 = wbia_pie_v2._plugin.evaluate_distmat(test_ibs, aid_list, CONFIGS[species], use_depc=False)
         >>> expected_rank1 = 0.81366
         >>> assert abs(rank1 - expected_rank1) < 1e-3
     """
@@ -108,7 +105,7 @@ def pie_compute_embedding(ibs, aid_list, config):
     cfg = _load_config(config)
 
     # Load model
-    model = _load_model(cfg, MODEL_URLS[species])
+    model = _load_model(cfg, MODELS[species])
 
     # Preprocess images to model input
     test_loader, test_dataset = _load_data(ibs, aid_list, cfg)
@@ -157,8 +154,6 @@ def _load_config(config_url):
     config_file = ut.grab_file_url(
         config_url, appname='wbia_pie_v2', check_hash=True, fname=config_fname
     )
-    # TODO remove this after config is uploaded to public server
-    config_file = 'wbia_pie_v2/reid-data/temp_data/pie_v2.whale_shark.20210304.yaml'
 
     cfg = get_default_config()
     cfg.use_gpu = torch.cuda.is_available()
@@ -166,7 +161,7 @@ def _load_config(config_url):
     return cfg
 
 
-def _load_model(cfg, model_url=None):
+def _load_model(cfg, model_url):
     r"""
     Load a model based on config file
     """
@@ -180,16 +175,10 @@ def _load_model(cfg, model_url=None):
     )
 
     # Download the model weights
-    if model_url is not None:
-        model_fname = model_url.split('/')[-1]
-        model_path = ut.grab_file_url(
-            model_url, appname='wbia_pie_v2', check_hash=True, fname=model_fname
-        )
-    else:
-        # TODO remove this after config is uploaded to public server
-        model_path = (
-            'wbia_pie_v2/reid-data/temp_data/whale_shark_cropped_model_20210315.pth.tar'
-        )
+    model_fname = model_url.split('/')[-1]
+    model_path = ut.grab_file_url(
+        model_url, appname='wbia_pie_v2', check_hash=True, fname=model_fname
+    )
 
     load_pretrained_weights(model, model_path)
 
@@ -241,8 +230,6 @@ def wbia_pie_v2_test_ibs(demo_db_url, species, subset):
     r"""
     Create a database to test orientation detection from a coco annotation file
     """
-    # TODO upload test db to public server
-
     testdb_name = 'testdb_{}_{}'.format(species, subset)
 
     test_ibs = wbia.opendb(testdb_name, allow_newdir=True)
@@ -251,8 +238,7 @@ def wbia_pie_v2_test_ibs(demo_db_url, species, subset):
     else:
         # Download demo data archive
         db_dir = ut.grab_zipped_url(demo_db_url, appname='wbia_pie_v2')
-        # TODO remore db_dir
-        db_dir = '/home/olga.moskvyak/.cache/wbia_pie_v2/whale_shark_cropped_demo'
+
         # Load coco annotations
         json_file = os.path.join(
             db_dir, 'annotations', 'instances_{}.json'.format(subset)
