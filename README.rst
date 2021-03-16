@@ -1,10 +1,11 @@
 =====================
-Wildbook IA - wbia_id
+Wildbook IA - wbia_pie_v2
 =====================
 
-ID Plug-in Example - Part of the WildMe / Wildbook IA Project.
+Pose Invariant Embedding Re-identification Plug-in - Part of the WildMe / Wildbook IA Project.
 
-An example of how to design and use a Python module as a plug-in in the WBIA system
+A plugin for re-identification of wildlife individuals based on unique natural body
+markings.
 
 Installation
 ------------
@@ -43,24 +44,17 @@ Python API
 .. code:: bash
 
     python
-
-    Python 2.7.14 (default, Sep 27 2017, 12:15:00)
-    [GCC 4.2.1 Compatible Apple LLVM 9.0.0 (clang-900.0.37)] on darwin
-    Type "help", "copyright", "credits" or "license" for more information.
-    >>> import wbia
-    >>> ibs = wbia.opendb()
-
-    [ibs.__init__] new IBEISController
-    [ibs._init_dirs] ibs.dbdir = u'/Datasets/testdb1'
-    [depc] Initialize ANNOTATIONS depcache in u'/Datasets/testdb1/_ibsdb/_wbia_cache'
-    [depc] Initialize IMAGES depcache in u'/Datasets/testdb1/_ibsdb/_wbia_cache'
-    [ibs.__init__] END new WBIAController
-
-    >>> ibs.wbia_plugin_identification_example_hello_world()
-    '[wbia_plugin_identification_example] hello world with WBIA controller <WBIAController(testdb1) at 0x10b24c9d0>'
+    >>> import wbia_pie_v2
+    >>> from wbia_pie_v2._plugin import DEMOS, CONFIGS, MODELS
+    >>> species = 'whale_shark'
+    >>> test_ibs = wbia_pie_v2._plugin.wbia_pie_v2_test_ibs(DEMOS[species], species, 'test2021')
+    >>> aid_list = test_ibs.get_valid_aids(species=species)
+    >>> rank1 = test_ibs.evaluate_distmat(aid_list, CONFIGS[species], use_depc=False)
+    >>> expected_rank1 = 0.81366
+    >>> assert abs(rank1 - expected_rank1) < 1e-2
 
 The function from the plugin is automatically added as a method to the ibs object
-as `ibs.wbia_plugin_identification_example_hello_world()`, which is registered using the
+as `ibs.pie_embedding()`, which is registered using the
 `@register_ibs_method decorator`.
 
 Code Style and Development Guidelines
@@ -118,3 +112,75 @@ To run doctests with `+REQUIRES(--web-tests)` do:
 .. code:: bash
 
     pytest --web-tests
+
+
+Results and Examples
+---------------------
+
+Quantitative and qualitative results are presented `here </wbia_pie_v2>`_
+
+
+Implementation details
+----------------------
+Dependencies
+~~~~~~~~~~~~~
+* Python >= 3.7
+* PyTorch >= 1.5
+* Torchvision =- 0.8
+
+Source Data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Data used for training and evaluation:
+
+ * whale shark (whole body)
+ * whale shark (cropped)
+ * show leopards
+
+Key annotations required:
+
+* bounding box containing a region of interest
+* name of an animal individual
+* viewpoint (left or right side for sharks)
+
+Viewpoint is an important parameter as left and right sides are different and
+are considered as different identities for matching.
+Identity label is a concatenation of name and viewpoint.
+
+Data preprocessing
+~~~~~~~~~~~~~~~~~~
+
+Each dataset is preprocessed to speed-up image loading during training. At the first time of running a training or a testing script on a dataset the following operations are applied:
+ * an object is cropped by boudnding box from annotations;
+ * an image is resized so the smaller side is equal to the double size of a model input; the aspect ratio is preserved.
+
+Training
+~~~~~~~~~~~~
+
+Run the training script:
+
+.. code:: bash
+
+    cd wbia_pie_v2
+    python train.py --cfg <path_to_config_file> <additional_optional_params>
+
+Configuration files are listed in `wbia_pie_v2/configs` folder. For example, the following line trains the model with parameters specified in the config file:
+
+.. code:: bash
+
+    python train.py --cfg configs/01_whaleshark_cropped_resnet50.yaml
+
+
+To override a parameter in config, add this parameter as a command line argument:
+
+.. code:: bash
+
+    python train.py --cfg configs/01_whaleshark_cropped_resnet50.yaml train.batch_size 48
+
+To evaluate a model on the test subset, set the parameter `test.evaluate True` and
+parameter `test.visrank True` to visualize results. Provide the path to the model.
+
+For example:
+
+.. code:: bash
+
+    python train.py --cfg configs/01_whaleshark_cropped_resnet50.yaml test.evaluate True model.load_weights <path_to_trained_model>
