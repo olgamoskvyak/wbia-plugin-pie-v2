@@ -1,11 +1,11 @@
-=====================
+==========================
 Wildbook IA - wbia_pie_v2
-=====================
+==========================
 
 Pose Invariant Embedding Re-identification Plug-in - Part of the WildMe / Wildbook IA Project.
 
 A plugin for re-identification of wildlife individuals based on unique natural body
-markings.
+markings. Updated implementation with PyTorch (`first version here <https://github.com/WildMeOrg/wbia-plugin-pie>`_).
 
 Installation
 ------------
