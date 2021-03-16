@@ -71,7 +71,7 @@ def visualize_ranked_results(distmat, query, width=128, height=256, save_dir='',
             shutil.copy(src, dst)
 
     for q_idx in range(num_q):
-        qimg_path, qpid, qcamid = query[q_idx][:3]
+        qimg_path, qpid = query[q_idx]['impath'], query[q_idx]['pid']
         qimg_path_name = qimg_path
 
         qimg = imageio.imread(qimg_path)
@@ -85,7 +85,7 @@ def visualize_ranked_results(distmat, query, width=128, height=256, save_dir='',
 
         rank_idx = 1
         for g_idx in indices[q_idx, 1:]:
-            gimg_path, gpid, gcamid = query[g_idx][:3]
+            gimg_path, gpid = query[g_idx]['impath'], query[g_idx]['pid']
 
             matched = gpid == qpid
             border_color = 'green' if matched else 'red'
