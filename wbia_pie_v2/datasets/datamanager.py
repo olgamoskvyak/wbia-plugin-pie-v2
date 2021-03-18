@@ -76,11 +76,10 @@ class AnimalImageDataManager:
 
         self.num_copies = num_copies
 
-        print('=> Loading train (source) dataset')
+        print('=> Loading train dataset')
         self.train_set = init_image_dataset(
             self.source, transform=self.transform_tr, k_tfm=k_tfm, mode='train', root=root
         )
-        # write_json(trainset.train, os.path.join(root, 'train.json'))
 
         self._num_train_pids = self.train_set.num_train_pids
 
@@ -112,7 +111,6 @@ class AnimalImageDataManager:
             pin_memory=self.use_gpu,
             drop_last=False,
         )
-        # write_json(queryset.query, os.path.join(root, 'test.json'))
 
     @property
     def num_train_pids(self):
