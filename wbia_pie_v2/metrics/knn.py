@@ -4,16 +4,17 @@ from sklearn.neighbors import NearestNeighbors
 
 
 def predict_k_neigh(db_emb, db_lbls, test_emb, k=5):
-    """Predict k nearest solutions for test embeddings based on labelled database embeddings.
+    """Get k nearest solutions from the database for test embeddings (query)
+    using k-NearestNeighbors algorithm.
     Input:
-    db_emb: 2D float array (num_emb, emb_size): database embeddings
-    db_lbls: 1D array, string or floats: database labels
-    test_emb: 2D float array: test embeddings
-    k: integer, number of predictions.
+        db_emb (float array): database embeddings of size (num_emb, emb_size)
+        db_lbls (str or int array): database labels of size (num_emb,)
+        test_emb (float array): test embeddings of size (num_emb_t, emb_size)
+        k (int): number of predictions to return
     Returns:
-    neigh_lbl_un - 2d int array of shape [len(test_emb), k] labels of predictions
-    neigh_ind_un - 2d int array of shape [len(test_emb), k] labels of indices of nearest points
-    neigh_dist_un - 2d float array of shape [len(test_emb), k] distances of predictions
+        neigh_lbl_un (str or int array): labels of predictions of shape (num_emb_t, k)
+        neigh_ind_un (int array): labels of indices of nearest points of shape (num_emb_t, k)
+        neigh_dist_un (float array): distances of predictions of shape (num_emb_t, k)
     """
     # Set number of nearest points (with duplicated labels)
     k_w_dupl = min(50, len(db_emb))
@@ -45,7 +46,9 @@ def predict_k_neigh(db_emb, db_lbls, test_emb, k=5):
 
 
 def pred_light(query_embedding, db_embeddings, db_labels, n_results=10):
-    # Fit nearest neighbours classifier
+    """Get k nearest solutions from the database for one query embedding
+    using k-NearestNeighbors algorithm.
+    """
     neigh_lbl_un, neigh_ind_un, neigh_dist_un = predict_k_neigh(
         db_embeddings, db_labels, query_embedding, k=n_results
     )
@@ -60,7 +63,8 @@ def pred_light(query_embedding, db_embeddings, db_labels, n_results=10):
 
 
 def rem_dupl(seq, seq2=None):
-    """Remove duplicates from a sequence and keep the order of elements. Do it in unison with a sequence 2."""
+    """Remove duplicates from a sequence and keep the order of elements.
+    Do it in unison with a sequence 2."""
     seen = set()
     seen_add = seen.add
     if seq2 is None:
