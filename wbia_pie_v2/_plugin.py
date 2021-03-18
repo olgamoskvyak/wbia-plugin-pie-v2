@@ -75,7 +75,7 @@ def pie_embedding(ibs, aid_list, config=None, use_depc=False):
 
 class PieEmbeddingConfig(dt.Config):  # NOQA
     _param_info_list = [
-        ut.ParamInfo('config_path', ''),
+        ut.ParamInfo('config_path', default=None),
     ]
 
 
