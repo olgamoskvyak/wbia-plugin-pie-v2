@@ -167,3 +167,9 @@ For example:
 .. code:: bash
 
     python train.py --cfg configs/01_whaleshark_cropped_resnet50.yaml test.evaluate True model.load_weights <path_to_trained_model>
+
+
+Acknowledgement
+---------------
+
+The code is adapted from `TorchReid <https://github.com/KaiyangZhou/deep-person-reid>`_ library for person re-identification.
