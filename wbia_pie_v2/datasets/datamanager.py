@@ -5,7 +5,7 @@ from __future__ import division, print_function, absolute_import
 import torch
 from datasets.sampler import RandomCopiesIdentitySampler
 from datasets import init_image_dataset
-from .transforms import build_transforms
+from .transforms import build_train_test_transforms
 
 # from utils.tools import write_json
 
@@ -48,7 +48,8 @@ class AnimalImageDataManager:
         source=None,
         height=256,
         width=128,
-        transforms='random_flip',
+        transforms_train='random_flip',
+        transforms_test='resize',
         k_tfm=1,
         norm_mean=None,
         norm_std=None,
@@ -64,10 +65,11 @@ class AnimalImageDataManager:
         self.height = height
         self.width = width
 
-        self.transform_tr, self.transform_te = build_transforms(
+        self.transform_tr, self.transform_te = build_train_test_transforms(
             self.height,
             self.width,
-            transforms=transforms,
+            transforms_train=transforms_train,
+            transforms_test=transforms_test,
             norm_mean=norm_mean,
             norm_std=norm_std,
         )
