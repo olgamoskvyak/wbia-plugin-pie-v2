@@ -76,7 +76,7 @@ def pie_v2_embedding(ibs, aid_list, config=None, use_depc=True):
     return embeddings
 
 
-class PieEmbeddingConfig(dt.Config):  # NOQA
+class PieV2EmbeddingConfig(dt.Config):  # NOQA
     _param_info_list = [
         ut.ParamInfo('config_path', default=None),
     ]
@@ -87,7 +87,7 @@ class PieEmbeddingConfig(dt.Config):  # NOQA
     parents=[ANNOTATION_TABLE],
     colnames=['embedding'],
     coltypes=[np.ndarray],
-    configclass=PieEmbeddingConfig,
+    configclass=PieV2EmbeddingConfig,
     fname='pie_v2',
     chunksize=128,
 )
@@ -184,7 +184,7 @@ def get_match_results(depc, qaid_list, daid_list, score_list, config):
 
 class PieV2Request(dt.base.VsOneSimilarityRequest):
     _symmetric = False
-    _tablename = 'Pie'
+    _tablename = 'PieTwo'
 
     @ut.accepts_scalar_input
     def get_fmatch_overlayed_chip(request, aid_list, overlay=True, config=None):
@@ -202,16 +202,17 @@ class PieV2Request(dt.base.VsOneSimilarityRequest):
         out_image = vt.stack_image_list(chips)
         return out_image
 
-    def postprocess_execute(request, parent_rowids, result_list):
+    def postprocess_execute(request, table, parent_rowids, rowids, result_list):
         qaid_list, daid_list = list(zip(*parent_rowids))
         score_list = ut.take_column(result_list, 0)
         depc = request.depc
         config = request.config
         cm_list = list(get_match_results(depc, qaid_list, daid_list, score_list, config))
+        table.delete_rows(rowids)
         return cm_list
 
     def execute(request, *args, **kwargs):
-        kwargs['use_cache'] = False
+        # kwargs['use_cache'] = False
         result_list = super(PieV2Request, request).execute(*args, **kwargs)
         qaids = kwargs.pop('qaids', None)
         if qaids is not None:
