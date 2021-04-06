@@ -66,7 +66,8 @@ def pie_v2_embedding(ibs, aid_list, config=None, use_depc=True):
 
     """
     if use_depc:
-        embeddings = ibs.depc_annot.get('PieEmbeddingVTwo', aid_list, 'embedding', config)
+        config_map = {'config_path': config}
+        embeddings = ibs.depc_annot.get('PieEmbeddingVTwo', aid_list, 'embedding', config_map)
     else:
         embeddings = pie_v2_compute_embedding(ibs, aid_list, config)
     return embeddings
