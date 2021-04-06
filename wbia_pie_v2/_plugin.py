@@ -36,15 +36,17 @@ DEMOS = {
 
 CONFIGS = {
     'whale_shark': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark.20210315.yaml',
+    'shark_sand_tiger': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark.20210315.yaml',
 }
 
 MODELS = {
     'whale_shark': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark_cropped_model_20210315.pth.tar',
+    'shark_sand_tiger': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark_cropped_model_20210315.pth.tar',
 }
 
 
 @register_ibs_method
-def pie_embedding(ibs, aid_list, config=None, use_depc=False):
+def pie_v2_embedding(ibs, aid_list, config=None, use_depc=True):
     r"""
     Generate embeddings using the Pose-Invariant Embedding (PIE)
     Args:
@@ -52,7 +54,7 @@ def pie_embedding(ibs, aid_list, config=None, use_depc=False):
         aid_list  (int): annot ids specifying the input
         use_depc (bool): use dependency cache
     CommandLine:
-        python -m wbia_pie_v2._plugin pie_embedding
+        python -m wbia_pie_v2._plugin pie_v2_embedding
     Example:
         >>> # ENABLE_DOCTEST
         >>> import wbia_pie_v2
@@ -66,10 +68,9 @@ def pie_embedding(ibs, aid_list, config=None, use_depc=False):
 
     """
     if use_depc:
-        config_map = {'config_path': config}
-        embeddings = ibs.depc_annot.get('PieEmbedding', aid_list, 'embedding', config_map)
+        embeddings = ibs.depc_annot.get('PieEmbeddingVTwo', aid_list, 'embedding', config)
     else:
-        embeddings = pie_compute_embedding(ibs, aid_list, config)
+        embeddings = pie_v2_compute_embedding(ibs, aid_list, config)
     return embeddings
 
 
@@ -80,7 +81,7 @@ class PieEmbeddingConfig(dt.Config):  # NOQA
 
 
 @register_preproc_annot(
-    tablename='PieEmbedding',
+    tablename='PieEmbeddingVTwo',
     parents=[ANNOTATION_TABLE],
     colnames=['embedding'],
     coltypes=[np.ndarray],
@@ -89,15 +90,16 @@ class PieEmbeddingConfig(dt.Config):  # NOQA
     chunksize=128,
 )
 @register_ibs_method
-def pie_embedding_depc(depc, aid_list, config=None):
+def pie_v2_embedding_depc(depc, aid_list, config=None):
+    # ut.embed()
     ibs = depc.controller
-    embs = pie_compute_embedding(ibs, aid_list, config)
+    embs = pie_v2_compute_embedding(ibs, aid_list, config=config['config_path'])
     for aid, emb in zip(aid_list, embs):
         yield (np.array(emb),)
 
 
 @register_ibs_method
-def pie_compute_embedding(ibs, aid_list, config=None):
+def pie_v2_compute_embedding(ibs, aid_list, config=None):
     # Get species from the first annotation
     species = ibs.get_annot_species_texts(aid_list[0])
 
@@ -132,8 +134,7 @@ def evaluate_distmat(ibs, aid_list, config, use_depc, ranks=[1, 5, 10, 20]):
     """Evaluate 1vsall accuracy of matching on annotations by
     computing distance matrix.
     """
-
-    embs = np.array(pie_embedding(ibs, aid_list, config, use_depc))
+    embs = np.array(pie_v2_embedding(ibs, aid_list, config, use_depc))
     print('Computing distance matrix ...')
     distmat = distance_matrix(embs, embs)
 
@@ -289,9 +290,9 @@ def _db_labels_for_pie(ibs, daid_list):
 
 @register_ibs_method
 def pie_predict_light(ibs, qaid, daid_list):
-    db_embs = np.array(ibs.pie_embedding(daid_list))
+    db_embs = np.array(ibs.pie_v2_embedding(daid_list))
     db_labels = np.array(ibs.get_annot_name_texts(daid_list))
-    query_emb = np.array(ibs.pie_embedding([qaid]))
+    query_emb = np.array(ibs.pie_v2_embedding([qaid]))
 
     ans = pred_light(query_emb, db_embs, db_labels)
     return ans
@@ -311,15 +312,13 @@ def _pie_accuracy(ibs, qaid, daid_list):
     return rank
 
 
-@register_ibs_method
-def pie_mass_accuracy(ibs, aid_list, daid_list=None):
+def pie_v2_mass_accuracy(ibs, aid_list, daid_list=None):
     if daid_list is None:
         daid_list = aid_list
     ranks = [_pie_accuracy(ibs, aid, daid_list) for aid in aid_list]
     return ranks
 
 
-@register_ibs_method
 def accuracy_at_k(ibs, ranks, max_rank=10):
     counts = [ranks.count(i) for i in range(1, max_rank + 1)]
     percent_counts = [count / len(ranks) for count in counts]
@@ -329,7 +328,6 @@ def accuracy_at_k(ibs, ranks, max_rank=10):
     return cumulative_percent
 
 
-@register_ibs_method
 def subset_with_resights(ibs, aid_list, n=3):
     names = ibs.get_annot_name_rowids(aid_list)
     name_counts = _count_dict(names)
@@ -362,10 +360,10 @@ def subset_with_resights_range(ibs, aid_list, min_sights=3, max_sights=10):
 
 
 @register_ibs_method
-def pie_new_accuracy(ibs, aid_list, min_sights=3, max_sights=10):
+def pie_v2_new_accuracy(ibs, aid_list, min_sights=3, max_sights=10):
     aids = subset_with_resights_range(ibs, aid_list, min_sights, max_sights)
-    ranks = ibs.pie_mass_accuracy(aids)
-    accuracy = ibs.accuracy_at_k(ranks)
+    ranks = pie_v2_mass_accuracy(ibs, aids)
+    accuracy = accuracy_at_k(ibs, ranks)
     print(
         'Accuracy at k for annotations with %s-%s sightings:' % (min_sights, max_sights)
     )
