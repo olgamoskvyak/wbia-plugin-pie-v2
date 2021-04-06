@@ -68,7 +68,9 @@ def pie_v2_embedding(ibs, aid_list, config=None, use_depc=True):
     """
     if use_depc:
         config_map = {'config_path': config}
-        embeddings = ibs.depc_annot.get('PieTwoEmbedding', aid_list, 'embedding', config_map)
+        embeddings = ibs.depc_annot.get(
+            'PieTwoEmbedding', aid_list, 'embedding', config_map
+        )
     else:
         embeddings = pie_v2_compute_embedding(ibs, aid_list, config)
     return embeddings
@@ -127,6 +129,7 @@ def pie_v2_compute_embedding(ibs, aid_list, config=None):
 
     embeddings = np.concatenate(embeddings)
     return embeddings
+
 
 class PieV2Config(dt.Config):  # NOQA
     def get_param_info_list(self):
