@@ -5,6 +5,7 @@ from wbia.constants import ANNOTATION_TABLE, UNKNOWN
 from wbia.constants import CONTAINERIZED, PRODUCTION  # NOQA
 import numpy as np
 import utool as ut
+import vtool as vt
 import wbia
 from wbia import dtool as dt
 import os
@@ -67,7 +68,7 @@ def pie_v2_embedding(ibs, aid_list, config=None, use_depc=True):
     """
     if use_depc:
         config_map = {'config_path': config}
-        embeddings = ibs.depc_annot.get('PieEmbeddingVTwo', aid_list, 'embedding', config_map)
+        embeddings = ibs.depc_annot.get('PieTwoEmbedding', aid_list, 'embedding', config_map)
     else:
         embeddings = pie_v2_compute_embedding(ibs, aid_list, config)
     return embeddings
@@ -80,7 +81,7 @@ class PieEmbeddingConfig(dt.Config):  # NOQA
 
 
 @register_preproc_annot(
-    tablename='PieEmbeddingVTwo',
+    tablename='PieTwoEmbedding',
     parents=[ANNOTATION_TABLE],
     colnames=['embedding'],
     coltypes=[np.ndarray],
@@ -126,6 +127,128 @@ def pie_v2_compute_embedding(ibs, aid_list, config=None):
 
     embeddings = np.concatenate(embeddings)
     return embeddings
+
+class PieV2Config(dt.Config):  # NOQA
+    def get_param_info_list(self):
+        return [
+            ut.ParamInfo('config_path', None),
+        ]
+
+
+def get_match_results(depc, qaid_list, daid_list, score_list, config):
+    """ converts table results into format for ipython notebook """
+    # qaid_list, daid_list = request.get_parent_rowids()
+    # score_list = request.score_list
+    # config = request.config
+
+    unique_qaids, groupxs = ut.group_indices(qaid_list)
+    # grouped_qaids_list = ut.apply_grouping(qaid_list, groupxs)
+    grouped_daids = ut.apply_grouping(daid_list, groupxs)
+    grouped_scores = ut.apply_grouping(score_list, groupxs)
+
+    ibs = depc.controller
+    unique_qnids = ibs.get_annot_nids(unique_qaids)
+
+    # scores
+    _iter = zip(unique_qaids, unique_qnids, grouped_daids, grouped_scores)
+    for qaid, qnid, daids, scores in _iter:
+        dnids = ibs.get_annot_nids(daids)
+
+        # Remove distance to self
+        annot_scores = np.array(scores)
+        daid_list_ = np.array(daids)
+        dnid_list_ = np.array(dnids)
+
+        is_valid = daid_list_ != qaid
+        daid_list_ = daid_list_.compress(is_valid)
+        dnid_list_ = dnid_list_.compress(is_valid)
+        annot_scores = annot_scores.compress(is_valid)
+
+        # Hacked in version of creating an annot match object
+        match_result = wbia.AnnotMatch()
+        match_result.qaid = qaid
+        match_result.qnid = qnid
+        match_result.daid_list = daid_list_
+        match_result.dnid_list = dnid_list_
+        match_result._update_daid_index()
+        match_result._update_unique_nid_index()
+
+        grouped_annot_scores = vt.apply_grouping(annot_scores, match_result.name_groupxs)
+        name_scores = np.array([np.sum(dists) for dists in grouped_annot_scores])
+        match_result.set_cannonical_name_score(annot_scores, name_scores)
+        yield match_result
+
+
+class PieV2Request(dt.base.VsOneSimilarityRequest):
+    _symmetric = False
+    _tablename = 'Pie'
+
+    @ut.accepts_scalar_input
+    def get_fmatch_overlayed_chip(request, aid_list, overlay=True, config=None):
+        depc = request.depc
+        ibs = depc.controller
+        chips = ibs.get_annot_chips(aid_list)
+        return chips
+
+    def render_single_result(request, cm, aid, **kwargs):
+        # HACK FOR WEB VIEWER
+        overlay = kwargs.get('draw_fmatches')
+        chips = request.get_fmatch_overlayed_chip(
+            [cm.qaid, aid], overlay=overlay, config=request.config
+        )
+        out_image = vt.stack_image_list(chips)
+        return out_image
+
+    def postprocess_execute(request, parent_rowids, result_list):
+        qaid_list, daid_list = list(zip(*parent_rowids))
+        score_list = ut.take_column(result_list, 0)
+        depc = request.depc
+        config = request.config
+        cm_list = list(get_match_results(depc, qaid_list, daid_list, score_list, config))
+        return cm_list
+
+    def execute(request, *args, **kwargs):
+        kwargs['use_cache'] = False
+        result_list = super(PieV2Request, request).execute(*args, **kwargs)
+        qaids = kwargs.pop('qaids', None)
+        if qaids is not None:
+            result_list = [result for result in result_list if result.qaid in qaids]
+        return result_list
+
+
+@register_preproc_annot(
+    tablename='PieTwo',
+    parents=[ANNOTATION_TABLE, ANNOTATION_TABLE],
+    colnames=['score'],
+    coltypes=[float],
+    configclass=PieV2Config,
+    requestclass=PieV2Request,
+    fname='pie',
+    rm_extern_on_delete=True,
+    chunksize=None,
+)
+def wbia_plugin_pie_v2(depc, qaid_list, daid_list, config):
+    ibs = depc.controller
+
+    qaids = list(set(qaid_list))
+    daids = list(set(daid_list))
+
+    assert len(qaids) == 1
+    qaid = qaids[0]
+
+    pie_name_dists = ibs.pie_v2_predict_light(
+        qaid,
+        daids,
+        config['config_path'],
+    )
+    pie_name_scores = distance_dicts_to_name_score_dicts(pie_name_dists)
+
+    aid_score_list = aid_scores_from_name_scores(ibs, pie_name_scores, daids)
+    aid_score_dict = dict(zip(daids, aid_score_list))
+
+    for daid in daid_list:
+        daid_score = aid_score_dict.get(daid)
+        yield (daid_score,)
 
 
 @register_ibs_method
@@ -270,28 +393,11 @@ def wbia_pie_v2_test_ibs(demo_db_url, species, subset):
         return test_ibs
 
 
-# The following functions are copied from PIE v1 because these functions
-# are agnostic tot eh method of computing embeddings:
-# https://github.com/WildMeOrg/wbia-plugin-pie/wbia_pie/_plugin.py
-
-
-def _db_labels_for_pie(ibs, daid_list):
-    db_labels = ibs.get_annot_name_texts(daid_list)
-    db_auuids = ibs.get_annot_semantic_uuids(daid_list)
-    # later we must know which db_labels are for single auuids, hence prefix
-    db_auuids = [UNKNOWN + str(auuid) for auuid in db_auuids]
-    db_labels = [
-        lab if lab is not UNKNOWN else auuid for lab, auuid in zip(db_labels, db_auuids)
-    ]
-    db_labels = np.array(db_labels)
-    return db_labels
-
-
 @register_ibs_method
-def pie_predict_light(ibs, qaid, daid_list):
-    db_embs = np.array(ibs.pie_v2_embedding(daid_list))
-    db_labels = np.array(ibs.get_annot_name_texts(daid_list))
-    query_emb = np.array(ibs.pie_v2_embedding([qaid]))
+def pie_v2_predict_light(ibs, qaid, daid_list, config=None):
+    db_embs = np.array(ibs.pie_v2_embedding(daid_list, config))
+    db_labels = np.array(ibs.get_annot_name_texts(daid_list, config))
+    query_emb = np.array(ibs.pie_v2_embedding([qaid], config))
 
     ans = pred_light(query_emb, db_embs, db_labels)
     return ans
@@ -370,6 +476,21 @@ def pie_v2_new_accuracy(ibs, aid_list, min_sights=3, max_sights=10):
     return accuracy
 
 
+# The following functions are copied from PIE v1 because these functions
+# are agnostic tot eh method of computing embeddings:
+# https://github.com/WildMeOrg/wbia-plugin-pie/wbia_pie/_plugin.py
+def _db_labels_for_pie(ibs, daid_list):
+    db_labels = ibs.get_annot_name_texts(daid_list)
+    db_auuids = ibs.get_annot_semantic_uuids(daid_list)
+    # later we must know which db_labels are for single auuids, hence prefix
+    db_auuids = [UNKNOWN + str(auuid) for auuid in db_auuids]
+    db_labels = [
+        lab if lab is not UNKNOWN else auuid for lab, auuid in zip(db_labels, db_auuids)
+    ]
+    db_labels = np.array(db_labels)
+    return db_labels
+
+
 def _name_dict(ibs, aid_list):
     names = ibs.get_annot_name_rowids(aid_list)
     from collections import defaultdict
@@ -380,13 +501,41 @@ def _name_dict(ibs, aid_list):
     return name_aids
 
 
-def _invert_dict(d):
+def distance_to_score(distance):
+    # score = 1 / (1 + distance)
+    score = np.exp(-distance / 2.0)
+    return score
+
+
+def distance_dicts_to_name_score_dicts(distance_dicts, conversion_func=distance_to_score):
+    score_dicts = distance_dicts.copy()
+    name_score_dicts = {}
+    for entry in score_dicts:
+        name_score_dicts[entry['label']] = conversion_func(entry['distance'])
+    return name_score_dicts
+
+
+def aid_scores_from_name_scores(ibs, name_score_dict, daid_list):
+    # import utool as ut
+    # ut.embed()
+    daid_name_list = list(_db_labels_for_pie(ibs, daid_list))
+
+    name_count_dict = {
+        name: daid_name_list.count(name) for name in name_score_dict.keys()
+    }
+
+    name_annotwise_score_dict = {
+        name: name_score_dict[name] / name_count_dict[name]
+        for name in name_score_dict.keys()
+    }
+
     from collections import defaultdict
 
-    inverted = defaultdict(list)
-    for key, value in d.items():
-        inverted[value].append(key)
-    return dict(inverted)
+    name_annotwise_score_dict = defaultdict(float, name_annotwise_score_dict)
+
+    # bc daid_name_list is in the same order as daid_list
+    daid_scores = [name_annotwise_score_dict[name] for name in daid_name_list]
+    return daid_scores
 
 
 if __name__ == '__main__':
