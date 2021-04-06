@@ -36,12 +36,10 @@ DEMOS = {
 
 CONFIGS = {
     'whale_shark': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark.20210315.yaml',
-    'shark_sand_tiger': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark.20210315.yaml',
 }
 
 MODELS = {
     'whale_shark': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark_cropped_model_20210315.pth.tar',
-    'shark_sand_tiger': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark_cropped_model_20210315.pth.tar',
 }
 
 
