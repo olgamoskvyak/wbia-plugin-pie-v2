@@ -32,15 +32,15 @@ register_preproc_annot = controller_inject.register_preprocs['annot']
 
 
 DEMOS = {
-    'whale_shark': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_shark_cropped_demo.zip'
+    'whalesharkcr': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_shark_cropped_demo.zip',
 }
 
 CONFIGS = {
-    'whale_shark': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark.20210315.yaml',
+    'whalesharkcr': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark.20210315.yaml',
 }
 
 MODELS = {
-    'whale_shark': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark_cropped_model_20210315.pth.tar',
+    'whalesharkcr': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark_cropped_model_20210315.pth.tar',
 }
 
 
