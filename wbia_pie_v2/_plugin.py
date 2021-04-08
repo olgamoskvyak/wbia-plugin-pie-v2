@@ -104,7 +104,7 @@ def pie_v2_embedding_depc(depc, aid_list, config=None):
 
 
 @register_ibs_method
-def pie_v2_compute_embedding(ibs, aid_list, config=None):
+def pie_v2_compute_embedding(ibs, aid_list, config=None, multithread=False):
     # Get species from the first annotation
     species = ibs.get_annot_species_texts(aid_list[0])
 
@@ -117,7 +117,7 @@ def pie_v2_compute_embedding(ibs, aid_list, config=None):
     model = _load_model(cfg, MODELS[species])
 
     # Preprocess images to model input
-    test_loader, test_dataset = _load_data(ibs, aid_list, cfg)
+    test_loader, test_dataset = _load_data(ibs, aid_list, cfg, multithread)
 
     # Compute embeddings
     embeddings = []
@@ -324,7 +324,7 @@ def _load_model(cfg, model_url):
     return model
 
 
-def _load_data(ibs, aid_list, cfg):
+def _load_data(ibs, aid_list, cfg, multithread=False):
     r"""
     Load data, preprocess and create data loaders
     """
@@ -344,11 +344,16 @@ def _load_data(ibs, aid_list, cfg):
         image_paths, names, bboxes, target_imsize, test_transform
     )
 
+    if multithread:
+        num_workers = cfg.data.workers
+    else:
+        num_workers = 1
+
     dataloader = torch.utils.data.DataLoader(
         dataset,
         batch_size=cfg.test.batch_size,
         shuffle=False,
-        num_workers=cfg.data.workers,
+        num_workers=num_workers,
         pin_memory=True,
         drop_last=False,
     )
