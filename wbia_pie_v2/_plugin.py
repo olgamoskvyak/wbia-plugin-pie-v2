@@ -347,7 +347,7 @@ def _load_data(ibs, aid_list, cfg, multithread=False):
     if multithread:
         num_workers = cfg.data.workers
     else:
-        num_workers = 1
+        num_workers = 0
 
     dataloader = torch.utils.data.DataLoader(
         dataset,
