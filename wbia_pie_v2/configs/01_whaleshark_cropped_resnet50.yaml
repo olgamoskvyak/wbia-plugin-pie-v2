@@ -7,7 +7,7 @@ data:
   source: 'whaleshark_cropped'
   height: 256
   width: 256
-  transforms: ['center_crop', 'random_affine', 'color_jitter', 'random_grayscale', 'blur']
+  transforms_train: ['center_crop', 'random_affine', 'color_jitter', 'random_grayscale', 'blur']
   version: 'v1'
 
 loss:

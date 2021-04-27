@@ -23,7 +23,8 @@ def get_default_config():
     cfg.data.workers = 4  # number of data loading workers
     cfg.data.height = 256  # image height
     cfg.data.width = 256  # image width
-    cfg.data.transforms = ['random_flip']  # data augmentation
+    cfg.data.transforms_train = ['random_flip']  # training data augmentation
+    cfg.data.transforms_test = ['resize']  # testing data augmentation
     cfg.data.k_tfm = 1  # number of times to apply augmentation to an image
     cfg.data.norm_mean = [0.485, 0.456, 0.406]  # default is imagenet mean
     cfg.data.norm_std = [0.229, 0.224, 0.225]  # default is imagenet std
@@ -106,7 +107,8 @@ def imagedata_kwargs(cfg):
         'source': cfg.data.source,
         'height': cfg.data.height,
         'width': cfg.data.width,
-        'transforms': cfg.data.transforms,
+        'transforms_train': cfg.data.transforms_train,
+        'transforms_test': cfg.data.transforms_test,
         'k_tfm': cfg.data.k_tfm,
         'norm_mean': cfg.data.norm_mean,
         'norm_std': cfg.data.norm_std,

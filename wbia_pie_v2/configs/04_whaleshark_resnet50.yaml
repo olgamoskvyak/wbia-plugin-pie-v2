@@ -1,15 +1,15 @@
 model:
-  name: 'efficientnet_b4'
+  name: 'resnet50_fc512'
   pretrained: True
 
 data:
   type: 'image'
-  sources: ['whaleshark_cropped']
-  targets: ['whaleshark_cropped']
+  source: 'whaleshark'
   height: 256
   width: 256
-  combineall: False
   transforms_train: ['center_crop', 'random_affine', 'color_jitter', 'random_grayscale', 'blur']
+  transforms_test: ['center_crop', 'resize']
+  version: 'v2'
 
 loss:
   name: 'triplet'
@@ -30,7 +30,7 @@ train:
   batch_size: 64
   fixbase_epoch: 1
   open_layers: ['fc', 'classifier']
-  lr_scheduler: 'single_step'
+  lr_scheduler: 'multi_step'
   stepsize: [110]
 
 test:
