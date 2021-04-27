@@ -35,6 +35,7 @@ class COCODataset(ImageDataset):
         viewpoint_list=None,
         debug=False,
         viewpoint_csv=None,
+        excluded_names=None,
         **kwargs
     ):
         # Prepare directories
@@ -65,6 +66,7 @@ class COCODataset(ImageDataset):
                 expand=1.0,
                 min_size=imsize,
                 viewpoint_list=self.viewpoint_list,
+                excluded_names=excluded_names
             )
 
         print(
@@ -183,7 +185,8 @@ class COCODataset(ImageDataset):
         )
         return image_path
 
-    def _preproc_db(self, db_coco, expand, min_size, viewpoint_list, print_freq=100):
+    def _preproc_db(self, db_coco, expand, min_size, viewpoint_list, 
+        excluded_names, print_freq=100):
         """Preprocess images by cropping area around bounding box
         and resizing to a smaller size for faster augmentation and loading
         """
@@ -193,6 +196,11 @@ class COCODataset(ImageDataset):
         for i, db_rec in enumerate(db_coco):
             # Keep only records from specific viewpoints
             if viewpoint_list is not None and db_rec['viewpoint'] not in viewpoint_list:
+                excluded_records.append(db_rec)
+                continue
+
+            # Exclude names from the name exclusion list
+            if excluded_names is not None and db_rec['name'] in excluded_names:
                 excluded_records.append(db_rec)
                 continue
 

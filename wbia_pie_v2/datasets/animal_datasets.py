@@ -54,3 +54,22 @@ class MantaRayCropped(COCODataset):
             debug=False,
             **kwargs
         )
+
+
+class GrayWhale(COCODataset):
+    def __init__(self, **kwargs):
+        super(GrayWhale, self).__init__(
+            name='graywhale',
+            dataset_dir='graywhale',
+            dataset_url='',
+            split='test2021',
+            crop=True,
+            resize=True,
+            imsize=256,
+            train_min_samples=4,
+            id_attr=['name', 'viewpoint'],
+            viewpoint_list=['left', 'right'],
+            debug=False,
+            excluded_names='____',
+            **kwargs
+        )

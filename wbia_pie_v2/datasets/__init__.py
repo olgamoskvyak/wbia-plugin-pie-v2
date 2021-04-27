@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import
 from .animal_datasets import WhaleShark, WhaleSharkCropped, MantaRayCropped
+from .animal_datasets import GrayWhale
 from .animal_wbia import AnimalNameWbiaDataset  # noqa: F401
 
 
@@ -8,6 +9,7 @@ __image_datasets = {
     'whaleshark': WhaleShark,
     'whaleshark_cropped': WhaleSharkCropped,
     'mantaray_cropped': MantaRayCropped,
+    'graywhale': GrayWhale,
 }
 
 
