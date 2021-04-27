@@ -112,7 +112,11 @@ def main():
         label_smooth=cfg.loss.softmax.label_smooth,
     )
 
-    engine.run(**engine_run_kwargs(cfg), save_dir=save_dir)
+    engine.run(
+        **engine_run_kwargs(cfg),
+        save_dir=save_dir,
+        tb_dir=tb_dir
+    )
 
 
 if __name__ == '__main__':

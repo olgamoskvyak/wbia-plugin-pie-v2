@@ -110,6 +110,7 @@ class Engine(object):
     def run(
         self,
         save_dir='log',
+        tb_dir='tb_log',
         max_epoch=0,
         start_epoch=0,
         print_freq=10,
