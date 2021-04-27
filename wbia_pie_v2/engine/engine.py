@@ -16,6 +16,7 @@ from utils import (
     open_all_layers,
     save_checkpoint,
     open_specified_layers,
+    visualize_batch
 )
 from losses import DeepSupervision
 
@@ -125,6 +126,7 @@ class Engine(object):
         visrank_topk=10,
         ranks=[1, 5, 10, 20],
         rerank=False,
+        vis_train_data=True,
     ):
         r"""A unified pipeline for training and evaluating a model.
 
@@ -171,11 +173,14 @@ class Engine(object):
             return
 
         if self.writer is None:
-            self.writer = SummaryWriter(log_dir=save_dir)
+            self.writer = SummaryWriter(log_dir=tb_dir)
 
         time_start = time.time()
         self.start_epoch = start_epoch
         self.max_epoch = max_epoch
+        self.save_dir = save_dir
+        self.vis_train_data = vis_train_data
+
         print('=> Start training')
         is_best = False
         best_rank1 = 0.0
@@ -238,6 +243,14 @@ class Engine(object):
         self.num_batches = len(self.train_loader) * self.datamanager.num_copies
         end = time.time()
         for self.batch_idx, data in enumerate(self.train_loader):
+            if self.vis_train_data and self.epoch == 0:
+                # Visualise training batch at first epoch as a sanity check
+                visualize_batch(
+                    batch=data['img'],
+                    labels=data['pid'],
+                    save_dir=self.save_dir,
+                    figname='train_batch'
+                )
             data_time.update(time.time() - end)
             loss_summary = self.forward_backward(data)
             batch_time.update(time.time() - end)
