@@ -29,7 +29,7 @@ def get_default_config():
     cfg.data.norm_std = [0.229, 0.224, 0.225]  # default is imagenet std
     cfg.data.save_dir = 'log'  # path to save log
     cfg.data.version = 'v0'
-    cfg.data.tb_dir = 'tb_logs'
+    cfg.data.tb_dir = 'tb_log'
 
     # sampler
     cfg.sampler = CN()
