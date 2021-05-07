@@ -44,15 +44,11 @@ def build_train_test_transforms(
         transform_te: transformation function for testing
     """
     transform_tr = build_transforms(
-        height=height,
-        width=width,
-        transforms=transforms_train
+        height=height, width=width, transforms=transforms_train
     )
 
     transform_te = build_transforms(
-        height=height,
-        width=width,
-        transforms=transforms_test
+        height=height, width=width, transforms=transforms_test
     )
     return transform_tr, transform_te
 

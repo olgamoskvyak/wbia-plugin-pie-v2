@@ -16,7 +16,7 @@ from utils import (
     open_all_layers,
     save_checkpoint,
     open_specified_layers,
-    visualize_batch
+    visualize_batch,
 )
 from losses import DeepSupervision
 
@@ -249,7 +249,7 @@ class Engine(object):
                     batch=data['img'],
                     labels=data['pid'],
                     save_dir=self.save_dir,
-                    figname='train_batch'
+                    figname='train_batch',
                 )
             data_time.update(time.time() - end)
             loss_summary = self.forward_backward(data)

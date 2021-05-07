@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
 import torch
 import matplotlib.pyplot as plt
 import os.path as osp
 
 
-def visualize_batch(batch, labels=None, save_dir='', figname='figure',
-                    ncols=4, figsize=(4, 4)):
-    """ Visualise training batch
+def visualize_batch(
+    batch, labels=None, save_dir='', figname='figure', ncols=4, figsize=(4, 4)
+):
+    """Visualise training batch
 
     batch (torch.Tensor): images of shape (B, C, H, W)
     """
@@ -24,7 +26,7 @@ def visualize_batch(batch, labels=None, save_dir='', figname='figure',
 
     for r in range(nrows):
         for c in range(ncols):
-            index = r*ncols+c
+            index = r * ncols + c
             image = images[index]
             ax[r, c].imshow(image)
             if labels is not None:
