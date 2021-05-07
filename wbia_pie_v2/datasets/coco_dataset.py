@@ -18,6 +18,28 @@ class COCODataset(ImageDataset):
     """Create dataset from COCO annotations:
     Preprocess data for faster loading during training.
     Preprocessed data is stored alongside original data.
+
+    Input:
+        name (str): name of the dataset to reference dataset in config
+        dataset_dir (str): name of the directory for dataset files
+        dataset_url (str): url to donwload the dataset from
+        split (string): name of the annotated subset, e.g. train2020, test2020
+        root (str): root directory for dataset folders
+        crop (bool): if True crop images by bounding boxes from annotations
+        resize (bool): if True resize images to a unified size
+        imsize (int): min side of the image to resize during preprocessing
+        train_min_samples (int): min number of images per name for train set
+        test_min_samples (int): min number of images per name for test set
+        split_test (bool): if True, use separate data for testing
+            Default False
+        id_attr (list of str): list of annotation attributes to use as
+            a unique name. Default ['name']
+        viewpoint_list (str): path to a csv file with viewpoint annotations
+        debut (bool): if True only first 300 images are preprocessed
+            Default False
+        excluded_names (list of str): list of names to exclude from data
+        flip_test (bool): if True, flip test images horizintally
+            Default False
     """
 
     def __init__(
@@ -31,16 +53,20 @@ class COCODataset(ImageDataset):
         resize,
         imsize,
         train_min_samples,
+        test_min_samples=None,
+        split_test=None,
         id_attr=['name'],
         viewpoint_list=None,
         debug=False,
         viewpoint_csv=None,
         excluded_names=None,
+        flip_test=False,
         **kwargs
     ):
         # Prepare directories
         self.name = name
         self.split = split
+        self.split_test = split_test
         self.root = osp.abspath(osp.expanduser(root))
         self.dataset_dir_orig = osp.join(self.root, dataset_dir, 'original')
         self.dataset_dir_proc = osp.join(self.root, dataset_dir, 'processed')
@@ -51,22 +77,29 @@ class COCODataset(ImageDataset):
         self.viewpoint_csv = viewpoint_csv
         self.viewpoint_list = viewpoint_list
 
+        # Set directories and filenames for preprocessed annotations
+        self.set_prep_annots()
+        self.set_prep_images()
+
         # Preprocess and load dataset
-        if self._preproc_db_exists():
+        if self._preproc_db_exists(self.prep_images, self.prep_annots):
             # Load preprocessed dataset
-            self.db = self._get_preproc_db()
+            self.db = self._get_preproc_db(self.prep_annots)
         else:
             # Download dataset if not downloaded before
             if dataset_url is not None:
                 self.download_dataset(self.dataset_dir_orig, dataset_url)
             # Load COCO annots and preproc
-            db_coco = self._get_coco_db()
+            db_coco = self._get_coco_db(self.split)
             self.db = self._preproc_db(
                 db_coco=db_coco,
+                split=self.split,
+                annots_filename=self.prep_annots,
                 expand=1.0,
                 min_size=imsize,
+                fliplr=False,
                 viewpoint_list=self.viewpoint_list,
-                excluded_names=excluded_names
+                excluded_names=excluded_names,
             )
 
         print(
@@ -75,42 +108,83 @@ class COCODataset(ImageDataset):
             )
         )
 
-        train, test = self._split_train_test_min_samples(
-            data=self.db, name_idx='id_name', train_min_samples=train_min_samples
-        )
+        if self.split_test is not None:
+            if self._preproc_db_exists(self.prep_images_test, self.prep_annots_test):
+                self.db_test = self._get_preproc_db(self.prep_annots_test)
+            else:
+                # Load COCO test annots and preproc
+                db_coco_test = self._get_coco_db(self.split_test)
+                self.db_test = self._preproc_db(
+                    db_coco=db_coco_test,
+                    split=self.split_test,
+                    annots_filename=self.prep_annots_test,
+                    expand=1.0,
+                    min_size=imsize,
+                    fliplr=flip_test,
+                    viewpoint_list=self.viewpoint_list,
+                    excluded_names=excluded_names,
+                )
+            print(
+                '=> load {} samples from {} / {} dataset'.format(
+                    len(self.db_test), self.name, self.split_test
+                )
+            )
+
+        if self.split_test is None:
+            train, test = self._split_train_test_min_samples(
+                data=self.db, name_idx='id_name', train_min_samples=train_min_samples
+            )
+        else:
+            train = self._filter_min_samples(
+                data=self.db, name_idx='id_name', min_samples=train_min_samples
+            )
+            test = self._filter_min_samples(
+                data=self.db_test, name_idx='id_name', min_samples=test_min_samples
+            )
 
         train = self.db_to_tuples(train, relabel=True, name_key='id_name')
         test = self.db_to_tuples(test, relabel=False, name_key='id_name')
 
         super(COCODataset, self).__init__(train, test, **kwargs)
 
-    def _preproc_db_exists(self):
-        """ Check if preprocessed dataset exists in a directory"""
+    def set_prep_images(self):
         self.prep_images = osp.join(self.dataset_dir_proc, 'images', self.split)
+        if self.split_test is not None:
+            self.prep_images_test = osp.join(
+                self.dataset_dir_proc, 'images', self.split_test
+            )
+
+    def set_prep_annots(self):
         self.prep_annots = osp.join(
             self.dataset_dir_proc, 'annots', '{}.json'.format(self.split)
         )
+        if self.split_test is not None:
+            self.prep_annots_test = osp.join(
+                self.dataset_dir_proc, 'annots', '{}.json'.format(self.split_test)
+            )
 
-        if osp.exists(self.prep_images) and osp.exists(self.prep_annots):
+    def _preproc_db_exists(self, prep_images, prep_annots):
+        """ Check if preprocessed dataset exists in a directory"""
+        if osp.exists(prep_images) and osp.exists(prep_annots):
             return True
         else:
-            os.makedirs(self.prep_images, exist_ok=True)
-            os.makedirs(osp.split(self.prep_annots)[0], exist_ok=True)
+            os.makedirs(prep_images, exist_ok=True)
+            os.makedirs(osp.split(prep_annots)[0], exist_ok=True)
             return False
 
-    def _get_preproc_db(self):
+    def _get_preproc_db(self, annots):
         """ Load annotation file for preprocessed database """
-        with open(self.prep_annots) as file:
+        with open(annots) as file:
             db = json.load(file)
         return db
 
-    def _get_coco_db(self):
+    def _get_coco_db(self, split):
         """ Get database from COCO anntations """
         ann_file = osp.join(
             self.dataset_dir_orig,
             '{}.coco'.format(self.name),
             'annotations',
-            'instances_{}.json'.format(self.split),
+            'instances_{}.json'.format(split),
         )
         dataset = json.load(open(ann_file, 'r'))
 
@@ -185,8 +259,18 @@ class COCODataset(ImageDataset):
         )
         return image_path
 
-    def _preproc_db(self, db_coco, expand, min_size, viewpoint_list, 
-        excluded_names, print_freq=100):
+    def _preproc_db(
+        self,
+        db_coco,
+        split,
+        annots_filename,
+        expand,
+        min_size,
+        fliplr,
+        viewpoint_list,
+        excluded_names,
+        print_freq=100,
+    ):
         """Preprocess images by cropping area around bounding box
         and resizing to a smaller size for faster augmentation and loading
         """
@@ -248,12 +332,15 @@ class COCODataset(ImageDataset):
                     image, out_size, order=3, anti_aliasing=True
                 )
 
+            if fliplr:
+                image = np.fliplr(image)
+
             # Save image to processed folder
             im_filename = osp.basename(db_rec['image_path'])
             new_filename = osp.join(
                 self.dataset_dir_proc,
                 'images',
-                self.split,
+                split,
                 '{}_{}{}'.format(
                     osp.splitext(im_filename)[0],
                     db_rec['obj_id'],
@@ -280,12 +367,36 @@ class COCODataset(ImageDataset):
                 break
 
         # Save as json
-        with open(self.prep_annots, 'w', encoding='utf-8') as f:
+        with open(annots_filename, 'w', encoding='utf-8') as f:
             json.dump(prep_gt_db, f, ensure_ascii=False, indent=4)
 
         print('Excluded {} records'.format(len(excluded_records)))
 
         return prep_gt_db
+
+    def _filter_min_samples(self, data, name_idx, min_samples):
+        """Filter dataset to keep annotations for names with the number
+        of annotations per name more than the minimum number.
+        """
+        assert isinstance(
+            min_samples, int
+        ), 'min_samples should be int type , got type {}'.format(type(min_samples))
+
+        # Analyse unique names
+        names = np.array([item[name_idx] for item in data])
+        unames, counts = np.unique(names, return_counts=True)
+        print('Found {} unique names in {} records'.format(len(unames), len(names)))
+
+        filter_names = unames[counts >= min_samples]
+        print('Selecting names with more than {} examples'.format(min_samples))
+
+        new_set = []
+        for record in data:
+            if record[name_idx] in filter_names:
+                new_set.append(record)
+        print('Selected {} examples'.format(len(new_set)))
+
+        return new_set
 
     def _split_train_test_min_samples(self, data, name_idx, train_min_samples=10):
         """Split dataset into train and test subsets by min number of samples.
