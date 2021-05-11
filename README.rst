@@ -2,7 +2,7 @@
 Wildbook IA - wbia_pie_v2
 ==========================
 
-**The repository is forked and further updated/maintained [with WildMe](https://github.com/WildMeOrg/wbia-plugin-pie-v2).**
+**The repository is forked and further updated/maintained with _`WildMe <https://github.com/WildMeOrg/wbia-plugin-pie-v2>`_**
 
 Pose Invariant Embedding Re-identification Plug-in - Part of the WildMe / Wildbook IA Project.
 
