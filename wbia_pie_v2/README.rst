@@ -20,9 +20,7 @@ Rank-k means that a correct match is returned within top-k predictions.
 +======================+===============+==============+==============+==============+
 | Whale shark cropped  |     81.5%     |    89.5%     |    91.7%     |    94.7%     |
 +----------------------+---------------+--------------+--------------+--------------+
-| Whale Shark          |               |              |              |              |
-+----------------------+---------------+--------------+--------------+--------------+
-| Snow leopards        |               |              |              |              |
+| Whale Grey           |     69.5%     |    81.4%     |    85.3%     |    90.2%     |
 +----------------------+---------------+--------------+--------------+--------------+
 
 
@@ -53,4 +51,31 @@ Green border - correct match, red border - incorrect match.
    :align: center
 
 .. figure:: ../examples/000000000182_0.jpg
+   :align: center
+
+
+Whale Grey
+====================
+
+First image in each row is a query image.
+The next five images are the top-5 retrieved mathces from the test set.
+
+Green border - correct match, red border - incorrect match.
+
+.. figure:: ../examples/000000000004_0.jpg
+   :align: center
+
+.. figure:: ../examples/000000000013_0.jpg
+   :align: center
+
+.. figure:: ../examples/000000000022_0.jpg
+   :align: center
+
+.. figure:: ../examples/000000000025_0.jpg
+   :align: center
+
+.. figure:: ../examples/000000000027_0.jpg
+   :align: center
+
+.. figure:: ../examples/000000000047_0.jpg
    :align: center
