@@ -127,6 +127,7 @@ class Engine(object):
         ranks=[1, 5, 10, 20],
         rerank=False,
         vis_train_data=True,
+        visrank_resize=True,
     ):
         r"""A unified pipeline for training and evaluating a model.
 
@@ -169,6 +170,7 @@ class Engine(object):
                 save_dir=save_dir,
                 ranks=ranks,
                 rerank=rerank,
+                visrank_resize=visrank_resize,
             )
             return
 

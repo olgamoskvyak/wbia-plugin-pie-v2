@@ -20,7 +20,8 @@ GREEN = (0, 255, 0)
 RED = (0, 0, 255)
 
 
-def visualize_ranked_results(distmat, query, width=128, height=256, save_dir='', topk=10):
+def visualize_ranked_results(distmat, query, width=128, height=256,
+                             save_dir='', topk=10, resize=True):
     """Visualizes ranked results.
     Ranks will be plotted in a single figure.
 
@@ -75,12 +76,15 @@ def visualize_ranked_results(distmat, query, width=128, height=256, save_dir='',
         qimg_path_name = qimg_path
 
         qimg = imageio.imread(qimg_path)
-        qimg = transform.resize(qimg, (width, height), order=3, anti_aliasing=True)
+        if resize:
+            qimg = transform.resize(
+                qimg, (width, height), order=3, anti_aliasing=True
+            )
         ncols = topk + 1
         fig, ax = plt.subplots(nrows=1, ncols=ncols, figsize=(ncols * 4, 4))
 
         ax[0].imshow(qimg)
-        ax[0].set_title('Query {}'.format(qpid))
+        ax[0].set_title('Query {}'.format(qpid[:25]))
         ax[0].axis('off')
 
         rank_idx = 1
@@ -90,10 +94,13 @@ def visualize_ranked_results(distmat, query, width=128, height=256, save_dir='',
             matched = gpid == qpid
             border_color = 'green' if matched else 'red'
             gimg = imageio.imread(gimg_path)
-            gimg = transform.resize(gimg, (width, height), order=3, anti_aliasing=True)
+            if resize:
+                gimg = transform.resize(
+                    gimg, (width, height), order=3, anti_aliasing=True
+                )
 
             ax[rank_idx].imshow(gimg)
-            ax[rank_idx].set_title('{}'.format(gpid))
+            ax[rank_idx].set_title('{}'.format(gpid[:25]))
             ax[rank_idx].tick_params(
                 axis='both',
                 which='both',
