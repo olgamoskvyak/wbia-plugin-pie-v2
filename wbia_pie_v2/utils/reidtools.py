@@ -20,8 +20,9 @@ GREEN = (0, 255, 0)
 RED = (0, 0, 255)
 
 
-def visualize_ranked_results(distmat, query, width=128, height=256,
-                             save_dir='', topk=10, resize=True):
+def visualize_ranked_results(
+    distmat, query, width=128, height=256, save_dir='', topk=10, resize=True
+):
     """Visualizes ranked results.
     Ranks will be plotted in a single figure.
 
@@ -77,9 +78,7 @@ def visualize_ranked_results(distmat, query, width=128, height=256,
 
         qimg = imageio.imread(qimg_path)
         if resize:
-            qimg = transform.resize(
-                qimg, (width, height), order=3, anti_aliasing=True
-            )
+            qimg = transform.resize(qimg, (width, height), order=3, anti_aliasing=True)
         ncols = topk + 1
         fig, ax = plt.subplots(nrows=1, ncols=ncols, figsize=(ncols * 4, 4))
 
