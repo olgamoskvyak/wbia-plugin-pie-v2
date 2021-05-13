@@ -16,6 +16,47 @@ from torchvision.transforms import (
 )
 
 
+def build_train_test_transforms(
+    height,
+    width,
+    transforms_train='random_flip',
+    transforms_test='resize',
+    norm_mean=[0.485, 0.456, 0.406],
+    norm_std=[0.229, 0.224, 0.225],
+    **kwargs
+):
+    """Build train and test transformation functions.
+
+    Args:
+        height (int): target image height.
+        width (int): target image width.
+        transforms_train (str or list of str, optional): transformations
+            applied to training data. Default is 'random_flip'.
+        transforms_test (str or list of str, optional): transformations
+            applied to test data. Default is 'resize'.
+        norm_mean (list or None, optional): normalization mean values.
+            Default is ImageNet means.
+        norm_std (list or None, optional): normalization standard deviation
+            values. Default is ImageNet standard deviation values.
+
+    Returns:
+        transform_tr: transformation function for training
+        transform_te: transformation function for testing
+    """
+    transform_tr = build_transforms(
+        height=height,
+        width=width,
+        transforms=transforms_train
+    )
+
+    transform_te = build_transforms(
+        height=height,
+        width=width,
+        transforms=transforms_test
+    )
+    return transform_tr, transform_te
+
+
 class Random2DTranslation(object):
     """Randomly translates the input image with a probability.
 
@@ -62,17 +103,20 @@ def build_transforms(
     norm_std=[0.229, 0.224, 0.225],
     **kwargs
 ):
-    """Builds train and test transform functions.
+    """Build transformation functions.
 
     Args:
         height (int): target image height.
         width (int): target image width.
         transforms (str or list of str, optional): transformations applied to
-            model training. Default is 'random_flip'.
+            input data. Default is 'random_flip'.
         norm_mean (list or None, optional): normalization mean values.
             Default is ImageNet means.
         norm_std (list or None, optional): normalization standard deviation
             values. Default is ImageNet standard deviation values.
+
+    Returns:
+        transform_tr: transformation function
     """
     if transforms is None:
         transforms = []
@@ -95,12 +139,16 @@ def build_transforms(
         norm_std = [0.229, 0.224, 0.225]  # imagenet std
     normalize = Normalize(mean=norm_mean, std=norm_std)
 
-    print('Building train transforms ...')
+    print('Building transforms ...')
     transform_tr = []
 
     if 'center_crop' in transforms:
         print('+ center crop with size {}'.format(max(height, width)))
         transform_tr += [CenterCrop(max(height, width))]
+
+    if 'resize' in transforms:
+        print('+ resize to {}x{}'.format(height, width))
+        transform_tr += [Resize((height, width))]
 
     if 'random_flip' in transforms:
         print('+ random flip')
@@ -150,17 +198,4 @@ def build_transforms(
 
     transform_tr = Compose(transform_tr)
 
-    print('Building test transforms ...')
-    print('+ resize to {}x{}'.format(height, width))
-    print('+ to torch tensor of range [0, 1]')
-    print('+ normalization (mean={}, std={})'.format(norm_mean, norm_std))
-
-    transform_te = Compose(
-        [
-            Resize((height, width)),
-            ToTensor(),
-            normalize,
-        ]
-    )
-
-    return transform_tr, transform_te
+    return transform_tr

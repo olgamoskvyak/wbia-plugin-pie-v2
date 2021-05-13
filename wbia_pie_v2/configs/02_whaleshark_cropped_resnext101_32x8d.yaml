@@ -9,7 +9,7 @@ data:
   height: 256
   width: 256
   combineall: False
-  transforms: ['center_crop', 'random_affine', 'color_jitter', 'random_grayscale', 'blur']
+  transforms_train: ['center_crop', 'random_affine', 'color_jitter', 'random_grayscale', 'blur']
 
 loss:
   name: 'triplet'
