@@ -24,13 +24,14 @@ def get_default_config():
     cfg.data.height = 256  # image height
     cfg.data.width = 256  # image width
     cfg.data.transforms_train = ['random_flip']  # training data augmentation
+    cfg.data.transforms = ['resize']  # depricated. Keep for consistency
     cfg.data.transforms_test = ['resize']  # testing data augmentation
     cfg.data.k_tfm = 1  # number of times to apply augmentation to an image
     cfg.data.norm_mean = [0.485, 0.456, 0.406]  # default is imagenet mean
     cfg.data.norm_std = [0.229, 0.224, 0.225]  # default is imagenet std
     cfg.data.save_dir = 'log'  # path to save log
     cfg.data.version = 'v0'
-    cfg.data.tb_dir = 'tb_logs'
+    cfg.data.tb_dir = 'tb_log'
 
     # sampler
     cfg.sampler = CN()
@@ -97,6 +98,7 @@ def get_default_config():
     cfg.test.visrank = False  # visualize ranked results
     # (only available when cfg.test.evaluate=True)
     cfg.test.visrank_topk = 10  # top-k ranks to visualize
+    cfg.test.visrank_resize = True  # if True resize images for visualization
 
     return cfg
 
@@ -163,4 +165,5 @@ def engine_run_kwargs(cfg):
         'visrank_topk': cfg.test.visrank_topk,
         'ranks': cfg.test.ranks,
         'rerank': cfg.test.rerank,
+        'visrank_resize': cfg.test.visrank_resize,
     }

@@ -27,6 +27,7 @@ class PIEEngine(Engine):
         save_dir='',
         ranks=[1, 5, 10, 20],
         rerank=False,
+        visrank_resize=True,
     ):
         r"""Tests model on target datasets."""
         self.set_model_mode('eval')
@@ -42,6 +43,7 @@ class PIEEngine(Engine):
             save_dir=save_dir,
             ranks=ranks,
             rerank=rerank,
+            visrank_resize=visrank_resize,
         )
 
         if self.writer is not None:
@@ -62,6 +64,7 @@ class PIEEngine(Engine):
         save_dir='',
         ranks=[1, 5, 10, 20],
         rerank=False,
+        visrank_resize=True,
     ):
         batch_time = AverageMeter()
 
@@ -112,6 +115,7 @@ class PIEEngine(Engine):
                 height=self.datamanager.height,
                 save_dir=osp.join(save_dir, 'visrank_' + dataset_name),
                 topk=visrank_topk,
+                resize=visrank_resize,
             )
 
         return cmc[0], mAP

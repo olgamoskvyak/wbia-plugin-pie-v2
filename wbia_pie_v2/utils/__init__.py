@@ -7,3 +7,4 @@ from .avgmeter import *  # noqa: F401, F403
 from .reidtools import *  # noqa: F401, F403
 from .torchtools import *  # noqa: F401, F403
 from .model_complexity import compute_model_complexity  # noqa: F401
+from .vis import visualize_batch  # noqa: F401
