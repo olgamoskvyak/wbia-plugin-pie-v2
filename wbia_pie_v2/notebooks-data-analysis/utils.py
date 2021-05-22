@@ -5,10 +5,14 @@ import math
 
 
 def plot_names(names, filenames, bboxes, display_labels, crop=False,
-               max_display=16, ncols=4, ratio=(4, 4)):
-    # Select random name
-    name_idx = np.random.choice(len(names), size=1)[0]
-    name = names[name_idx]
+               max_display=16, ncols=4, ratio=(4, 4), name=None):
+    if name is None:
+        # Select random name
+        name_idx = np.random.choice(len(names), size=1)[0]
+        name = names[name_idx]
+    
+    assert name in names
+    
     num_samples = (names == name).sum()
     print('Found {} annots for name {}'.format(num_samples, name))
 
