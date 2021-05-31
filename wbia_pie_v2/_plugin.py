@@ -353,9 +353,17 @@ def _load_data(ibs, aid_list, cfg, multithread=False):
     bboxes = ibs.get_annot_bboxes(aid_list)
     names = ibs.get_annot_name_rowids(aid_list)
     target_imsize = (cfg.data.height, cfg.data.width)
+    viewpoints = ibs.get_annot_viewpoints(aid_list)
 
     dataset = AnimalNameWbiaDataset(
-        image_paths, names, bboxes, target_imsize, test_transform
+        image_paths,
+        names,
+        bboxes,
+        viewpoints,
+        target_imsize,
+        test_transform,
+        fliplr=cfg.test.fliplr,
+        fliplr_view=cfg.test.fliplr_view,
     )
 
     if multithread:
@@ -404,6 +412,10 @@ def wbia_pie_v2_test_ibs(demo_db_url, species, subset):
         # Get image paths and add them to the database
         gpaths = [os.path.join(db_dir, 'images', subset, f) for f in files]
         names = [a['name'] for a in coco_annots]
+        if 'viewpoint' in coco_annots[0]:
+            viewpoint_list = [a['viewpoint'] for a in coco_annots]
+        else:
+            viewpoint_list = None
 
         # Add files and names to db
         gid_list = test_ibs.add_images(gpaths)
@@ -413,7 +425,11 @@ def wbia_pie_v2_test_ibs(demo_db_url, species, subset):
         # these images are pre-cropped aka trivial annotations
         bbox_list = [a['bbox'] for a in coco_annots]
         test_ibs.add_annots(
-            gid_list, bbox_list=bbox_list, species_list=species, nid_list=nid_list
+            gid_list,
+            bbox_list=bbox_list,
+            species_list=species,
+            nid_list=nid_list,
+            viewpoint_list=viewpoint_list,
         )
 
         return test_ibs
