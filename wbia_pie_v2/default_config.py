@@ -99,6 +99,8 @@ def get_default_config():
     # (only available when cfg.test.evaluate=True)
     cfg.test.visrank_topk = 10  # top-k ranks to visualize
     cfg.test.visrank_resize = True  # if True resize images for visualization
+    cfg.test.fliplr = False  # if True flip test image left-right
+    cfg.test.fliplr_view = []  # viewpoint annotation to flip left-right
 
     return cfg
 

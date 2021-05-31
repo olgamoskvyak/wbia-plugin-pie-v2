@@ -44,3 +44,5 @@ test:
   ranks: [1, 5, 12, 20]
   visrank_topk: 5
   visrank_resize: False
+  fliplr: True
+  fliplr_view: ['left']
