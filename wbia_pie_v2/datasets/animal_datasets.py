@@ -76,3 +76,23 @@ class GrayWhale(COCODataset):
             excluded_names='____',
             **kwargs
         )
+
+
+class WildHorseFace(COCODataset):
+    def __init__(self, **kwargs):
+        super(WildHorseFace, self).__init__(
+            name='wildhorse_face',
+            dataset_dir='wildhorses_combined',
+            dataset_url='',
+            split='train2021',
+            crop=True,
+            flip_test=False,
+            resize=True,
+            imsize=300,
+            train_min_samples=3,
+            id_attr=['name', 'viewpoint'],
+            viewpoint_list=['front'],
+            debug=False,
+            excluded_names='____',
+            **kwargs
+        )
