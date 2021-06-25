@@ -35,21 +35,21 @@ DEMOS = {
     'whalesharkcr': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_shark_cropped_demo.zip',
     'rhincodon_typus': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_shark_cropped_demo.zip',
     'whale_grey': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_demo.zip',
-    'horse_wild': 'https://wildme-temp.s3.ap-southeast-2.amazonaws.com/pie_v2.wildhorses_demo.zip',
+    'horse_wild': 'https://wildbookiarepository.azureedge.net/models/pie_v2.wildhorses_demo.zip',
 }
 
 CONFIGS = {
     'whalesharkcr': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark.20210315.yaml',
     'rhincodon_typus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark.20210315.yaml',
     'whale_grey': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey.20210513.yaml',
-    'horse_wild': 'https://wildme-temp.s3.ap-southeast-2.amazonaws.com/pie_v2.wildhorse.20210621.yaml',
+    'horse_wild': 'https://wildbookiarepository.azureedge.net/models/pie_v2.wildhorse.20210621.yaml',
 }
 
 MODELS = {
     'whalesharkcr': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark_cropped_model_20210315.pth.tar',
     'rhincodon_typus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark_cropped_model_20210315.pth.tar',
     'whale_grey': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_model_20210513.pth.tar',
-    'horse_wild': 'https://wildme-temp.s3.ap-southeast-2.amazonaws.com/pie_v2.wildhorse_model_20210621.pth.tar',
+    'horse_wild': 'https://wildbookiarepository.azureedge.net/models/pie_v2.wildhorse_model_20210621.pth.tar',
 }
 
 
