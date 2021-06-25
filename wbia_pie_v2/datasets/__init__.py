@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import
 from .animal_datasets import WhaleShark, WhaleSharkCropped, MantaRayCropped
-from .animal_datasets import GrayWhale, Hyena, HyenaLeftsNoval, HyenaBothsides
+from .animal_datasets import GrayWhale, HyenaBothsides
 from .animal_wbia import AnimalNameWbiaDataset  # noqa: F401
 
 
@@ -10,10 +10,7 @@ __image_datasets = {
     'whaleshark_cropped': WhaleSharkCropped,
     'mantaray_cropped': MantaRayCropped,
     'graywhale': GrayWhale,
-    'hyena': Hyena,
-    'hyena_lefts_noval': HyenaLeftsNoval,
     'hyena_bothsides': HyenaBothsides,
-
 }
 
 

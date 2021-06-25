@@ -78,45 +78,6 @@ class GrayWhale(COCODataset):
         )
 
 
-class Hyena(COCODataset):
-    def __init__(self, **kwargs):
-        super(Hyena, self).__init__(
-            name='hyena',
-            dataset_dir='/data/db/_ibsdb/_ibeis_cache/coco',
-            dataset_url=None,
-            split='train2021',
-            crop=True,
-            resize=True,
-            imsize=256,
-            train_min_samples=3,
-            test_min_samples=3,
-            id_attr=['name', 'viewpoint'],
-            debug=False,
-            excluded_names='____',
-            **kwargs
-        )
-
-
-class HyenaLeftsNoval(COCODataset):
-    def __init__(self, **kwargs):
-        super(HyenaLeftsNoval, self).__init__(
-            name='hyena_lefts_noval',
-            dataset_dir='/data/db/_ibsdb/_ibeis_cache/hyena_lefts_noval',
-            dataset_url=None,
-            split='train2021',
-            split_test='test2021',
-            crop=True,
-            resize=True,
-            imsize=256,
-            train_min_samples=3,
-            test_min_samples=3,
-            id_attr=['name', 'viewpoint'],
-            debug=False,
-            excluded_names='____',
-            **kwargs
-        )
-
-
 class HyenaBothsides(COCODataset):
     def __init__(self, **kwargs):
         super(HyenaBothsides, self).__init__(
