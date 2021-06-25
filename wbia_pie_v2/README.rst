@@ -22,18 +22,19 @@ Rank-k means that a correct match is returned within top-k predictions.
 +----------------------+---------------+--------------+--------------+--------------+
 | Whale Grey           |     69.5%     |    81.4%     |    85.3%     |    90.2%     |
 +----------------------+---------------+--------------+--------------+--------------+
-
+| Wild horse           |     32.8%     |    53.4%     |    63.9%     |    71.8%     |
++----------------------+---------------+--------------+--------------+--------------+
 
 Qualitative results
 --------------------
 
-Whale Shark cropped
-====================
-
 First image in each row is a query image.
-The next five images are the top-5 retrieved mathces from the test set.
+The next five images are the top-5 retrieved matches from the test set.
 
 Green border - correct match, red border - incorrect match.
+
+Whale Shark cropped
+====================
 
 .. figure:: ../examples/000000000019_0.jpg
    :align: center
@@ -57,11 +58,6 @@ Green border - correct match, red border - incorrect match.
 Whale Grey
 ====================
 
-First image in each row is a query image.
-The next five images are the top-5 retrieved mathces from the test set.
-
-Green border - correct match, red border - incorrect match.
-
 .. figure:: ../examples/000000000004_0.jpg
    :align: center
 
@@ -78,4 +74,28 @@ Green border - correct match, red border - incorrect match.
    :align: center
 
 .. figure:: ../examples/000000000047_0.jpg
+   :align: center
+
+Wild horse
+====================
+
+.. figure:: ../examples/wh_000000000005_0.jpg
+   :align: center
+
+.. figure:: ../examples/wh_000000000015_0.jpg
+   :align: center
+
+.. figure:: ../examples/wh_000000000020_0.jpg
+   :align: center
+
+.. figure:: ../examples/wh_000000000022_0.jpg
+   :align: center
+
+.. figure:: ../examples/wh_000000000040_0.jpg
+   :align: center
+
+.. figure:: ../examples/wh_000000000057_0.jpg
+   :align: center
+
+.. figure:: ../examples/wh_000000000067_0.jpg
    :align: center
