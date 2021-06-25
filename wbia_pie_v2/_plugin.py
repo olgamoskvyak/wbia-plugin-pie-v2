@@ -42,7 +42,9 @@ CONFIGS = {
     'whalesharkcr': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark.20210315.yaml',
     'rhincodon_typus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark.20210315.yaml',
     'whale_grey': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey.20210513.yaml',
-    'eschrichtius_robustus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_model_20210513.pth.tar',
+    'eschrichtius_robustus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey.20210513.yaml',
+    'hyaena': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides.20210624.yaml',
+    'crocuta_crocuta': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides.20210624.yaml',
 }
 
 MODELS = {
@@ -50,6 +52,8 @@ MODELS = {
     'rhincodon_typus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark_cropped_model_20210315.pth.tar',
     'whale_grey': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_model_20210513.pth.tar',
     'eschrichtius_robustus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_model_20210513.pth.tar',
+    'hyaena': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides_model.20210624.pth.tar',
+    'crocuta_crocuta': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides_model.20210624.pth.tar',
 }
 
 
