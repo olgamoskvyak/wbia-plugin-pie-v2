@@ -36,6 +36,7 @@ DEMOS = {
     'rhincodon_typus': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_shark_cropped_demo.zip',
     'whale_grey': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_demo.zip',
     'eschrichtius_robustus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_demo.zip',
+    'horse_wild': 'https://wildbookiarepository.azureedge.net/models/pie_v2.wildhorses_demo.zip',
 }
 
 CONFIGS = {
@@ -45,6 +46,7 @@ CONFIGS = {
     'eschrichtius_robustus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey.20210513.yaml',
     'hyaena': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides.20210624.yaml',
     'crocuta_crocuta': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides.20210624.yaml',
+    'horse_wild': 'https://wildbookiarepository.azureedge.net/models/pie_v2.wildhorse.20210621.yaml',
 }
 
 MODELS = {
@@ -54,6 +56,7 @@ MODELS = {
     'eschrichtius_robustus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_model_20210513.pth.tar',
     'hyaena': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides_model.20210624.pth.tar',
     'crocuta_crocuta': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides_model.20210624.pth.tar',
+    'horse_wild': 'https://wildbookiarepository.azureedge.net/models/pie_v2.wildhorse_model_20210621.pth.tar',
 }
 
 
@@ -87,6 +90,17 @@ def pie_v2_embedding(ibs, aid_list, config=None, use_depc=True):
         >>> aid_list = test_ibs.get_valid_aids(species=species)
         >>> rank1 = test_ibs.evaluate_distmat(aid_list, CONFIGS[species], use_depc=False)
         >>> expected_rank1 = 0.69505
+        >>> assert abs(rank1 - expected_rank1) < 1e-2
+
+    Example:
+        >>> # ENABLE_DOCTEST
+        >>> import wbia_pie_v2
+        >>> from wbia_pie_v2._plugin import DEMOS, CONFIGS, MODELS
+        >>> species = 'horse_wild'
+        >>> test_ibs = wbia_pie_v2._plugin.wbia_pie_v2_test_ibs(DEMOS[species], species, 'test2021')
+        >>> aid_list = test_ibs.get_valid_aids(species=species)
+        >>> rank1 = test_ibs.evaluate_distmat(aid_list, CONFIGS[species], use_depc=False)
+        >>> expected_rank1 = 0.32773
         >>> assert abs(rank1 - expected_rank1) < 1e-2
 
     """
