@@ -279,20 +279,22 @@ def wbia_plugin_pie_v2(depc, qaid_list, daid_list, config):
     qaids = list(set(qaid_list))
     daids = list(set(daid_list))
 
-    assert len(qaids) == 1
-    qaid = qaids[0]
+    qaid_score_dict = {}
+    for qaid in qaids:
+        pie_name_dists = ibs.pie_v2_predict_light(
+            qaid,
+            daids,
+            config['config_path'],
+        )
+        pie_name_scores = distance_dicts_to_name_score_dicts(pie_name_dists)
 
-    pie_name_dists = ibs.pie_v2_predict_light(
-        qaid,
-        daids,
-        config['config_path'],
-    )
-    pie_name_scores = distance_dicts_to_name_score_dicts(pie_name_dists)
+        aid_score_list = aid_scores_from_name_scores(ibs, pie_name_scores, daids)
+        aid_score_dict = dict(zip(daids, aid_score_list))
 
-    aid_score_list = aid_scores_from_name_scores(ibs, pie_name_scores, daids)
-    aid_score_dict = dict(zip(daids, aid_score_list))
+        qaid_score_dict[qaid] = aid_score_dict
 
-    for daid in daid_list:
+    for qaid, daid in zip(qaid_list, daid_list):
+        aid_score_dict = qaid_score_dict.get(qaid, {})
         daid_score = aid_score_dict.get(daid)
         yield (daid_score,)
 
