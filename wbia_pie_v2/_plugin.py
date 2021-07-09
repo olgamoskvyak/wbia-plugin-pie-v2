@@ -270,11 +270,11 @@ class PieV2Request(dt.base.VsOneSimilarityRequest):
         depc = request.depc
         config = request.config
         cm_list = list(get_match_results(depc, qaid_list, daid_list, score_list, config))
-        # table.delete_rows(rowids)
+        table.delete_rows(rowids)
         return cm_list
 
     def execute(request, *args, **kwargs):
-        # kwargs['use_cache'] = False
+        kwargs['use_cache'] = True
         result_list = super(PieV2Request, request).execute(*args, **kwargs)
         qaids = kwargs.pop('qaids', None)
         if qaids is not None:
@@ -301,8 +301,6 @@ def wbia_plugin_pie_v2(depc, qaid_list, daid_list, config):
 
     use_knn = config.get('use_knn', True)
 
-    ut.embed()
-
     qaid_score_dict = {}
     for qaid in tqdm.tqdm(qaids):
         if use_knn:
@@ -328,8 +326,11 @@ def wbia_plugin_pie_v2(depc, qaid_list, daid_list, config):
                 qaid_score_dict[qaid][daid] = distance_to_score(pie_annot_distance, norm=500.0)
 
     for qaid, daid in zip(qaid_list, daid_list):
-        aid_score_dict = qaid_score_dict.get(qaid, {})
-        daid_score = aid_score_dict.get(daid)
+        if qaid == daid:
+            daid_score = 0.0
+        else:
+            aid_score_dict = qaid_score_dict.get(qaid, {})
+            daid_score = aid_score_dict.get(daid)
         yield (daid_score,)
 
 
