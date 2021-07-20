@@ -47,7 +47,7 @@ CONFIGS = {
     'hyaena': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides.20210624.yaml',
     'crocuta_crocuta': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides.20210624.yaml',
     'horse_wild': 'https://wildbookiarepository.azureedge.net/models/pie_v2.wildhorse.20210621.yaml',
-    'dolphin_humpback+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey.20210513.yaml',
+    'sousa_plumbea': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey.20210513.yaml',
     'zebra_grevys+_canonical_': 'https://wildbookiarepository.azureedge.net/models/pie_v2.zebra_canonical.20210629.yaml',
 }
 
@@ -59,7 +59,7 @@ MODELS = {
     'hyaena': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides_model.20210624.pth.tar',
     'crocuta_crocuta': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides_model.20210624.pth.tar',
     'horse_wild': 'https://wildbookiarepository.azureedge.net/models/pie_v2.wildhorse_model_20210621.pth.tar',
-    'dolphin_humpback+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_model_20210513.pth.tar',
+    'sousa_plumbea': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_model_20210513.pth.tar',
     'zebra_grevys+_canonical_': 'https://wildbookiarepository.azureedge.net/models/pie_v2.zebra_canonical.20210629.pth.tar',
 }
 
