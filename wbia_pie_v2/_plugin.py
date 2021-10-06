@@ -51,6 +51,8 @@ CONFIGS = {
     'horse_wild': 'https://wildbookiarepository.azureedge.net/models/pie_v2.wildhorse.20210621.yaml',
     'sousa_plumbea': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey.20210513.yaml',
     'zebra_grevys+_canonical_': 'https://wildbookiarepository.azureedge.net/models/pie_v2.zebra_canonical.20210629.yaml',
+    'physeter_macrocephalus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
+    'whale_sperm+fluke': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
 }
 
 MODELS = {
@@ -63,6 +65,8 @@ MODELS = {
     'horse_wild': 'https://wildbookiarepository.azureedge.net/models/pie_v2.wildhorse_model_20210621.pth.tar',
     'sousa_plumbea': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_model_20210513.pth.tar',
     'zebra_grevys+_canonical_': 'https://wildbookiarepository.azureedge.net/models/pie_v2.zebra_canonical.20210629.pth.tar',
+    'physeter_macrocephalus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
+    'whale_sperm+fluke': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
 }
 
 
