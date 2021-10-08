@@ -53,6 +53,7 @@ CONFIGS = {
     'zebra_grevys+_canonical_': 'https://wildbookiarepository.azureedge.net/models/pie_v2.zebra_canonical.20210629.yaml',
     'physeter_macrocephalus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
     'whale_sperm+fluke': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
+    'whale_sperm+flukeold': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
 }
 
 MODELS = {
@@ -67,6 +68,7 @@ MODELS = {
     'zebra_grevys+_canonical_': 'https://wildbookiarepository.azureedge.net/models/pie_v2.zebra_canonical.20210629.pth.tar',
     'physeter_macrocephalus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
     'whale_sperm+fluke': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
+    'whale_sperm+flukeold': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
 }
 
 
