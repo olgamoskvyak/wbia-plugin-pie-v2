@@ -614,15 +614,6 @@ def _db_labels_for_pie(ibs, daid_list):
     return db_labels
 
 
-def _name_dict(ibs, aid_list):
-    names = ibs.get_annot_name_rowids(aid_list)
-    from collections import defaultdict
-
-    name_aids = defaultdict(list)
-    for aid, name in zip(aid_list, names):
-        name_aids[name].append(aid)
-    return name_aids
-
 
 def distance_to_score(distance, norm=2.0):
     # score = 1 / (1 + distance)

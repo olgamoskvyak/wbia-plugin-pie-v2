@@ -33,6 +33,12 @@ def get_default_config():
     cfg.data.version = 'v0'
     cfg.data.tb_dir = 'tb_log'
 
+    # data fields added for auto_train
+    cfg.data.coco_dir = None # coco-formatted training data directory
+    cfg.data.split = None # can specify split path for above (not required)
+    cfg.data.split_test = None # same as split but for test data
+    cfg.data.dataset_url = None
+
     # sampler
     cfg.sampler = CN()
     cfg.sampler.num_instances = 4  # number of instances per identity

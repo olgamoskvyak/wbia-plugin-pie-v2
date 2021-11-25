@@ -38,6 +38,7 @@ class AnimalImageDataManager:
                     batch. Default is 4.
         num_copies (int, optional): number of copies for each image (different
                     augmentation will be applied). Default is 1.
+        config_fpath (str): path to config file for config-defined datasets
 
     """
     data_type = 'image'
@@ -59,6 +60,7 @@ class AnimalImageDataManager:
         workers=4,
         num_instances=4,
         num_copies=1,
+        config_fpath='',
     ):
 
         self.source = source
@@ -80,7 +82,7 @@ class AnimalImageDataManager:
 
         print('=> Loading train dataset')
         self.train_set = init_image_dataset(
-            self.source, transform=self.transform_tr, k_tfm=k_tfm, mode='train', root=root
+            self.source, transform=self.transform_tr, k_tfm=k_tfm, mode='train', root=root, config_fpath=config_fpath
         )
 
         self._num_train_pids = self.train_set.num_train_pids
@@ -103,7 +105,7 @@ class AnimalImageDataManager:
         print('=> Loading test dataset')
 
         self.test_set = init_image_dataset(
-            self.source, transform=self.transform_te, mode='test', root=root
+            self.source, transform=self.transform_te, mode='test', root=root, config_fpath=config_fpath
         )
         self.test_loader = torch.utils.data.DataLoader(
             self.test_set,
