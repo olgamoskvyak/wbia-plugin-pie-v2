@@ -13,12 +13,14 @@ import torch
 import torchvision.transforms as transforms  # noqa: E402
 from scipy.spatial import distance_matrix
 
+import tqdm
+
 from wbia_pie_v2.default_config import get_default_config
 from wbia_pie_v2.datasets import AnimalNameWbiaDataset  # noqa: E402
 from wbia_pie_v2.metrics import eval_onevsall
 from wbia_pie_v2.models import build_model
 from wbia_pie_v2.utils import read_json, load_pretrained_weights
-from wbia_pie_v2.metrics import pred_light
+from wbia_pie_v2.metrics import pred_light, compute_distance_matrix
 
 (print, rrr, profile) = ut.inject2(__name__)
 
@@ -35,6 +37,7 @@ DEMOS = {
     'whalesharkcr': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_shark_cropped_demo.zip',
     'rhincodon_typus': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_shark_cropped_demo.zip',
     'whale_grey': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_demo.zip',
+    'eschrichtius_robustus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_demo.zip',
     'horse_wild': 'https://wildbookiarepository.azureedge.net/models/pie_v2.wildhorses_demo.zip',
 }
 
@@ -42,15 +45,34 @@ CONFIGS = {
     'whalesharkcr': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark.20210315.yaml',
     'rhincodon_typus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark.20210315.yaml',
     'whale_grey': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey.20210513.yaml',
+    'eschrichtius_robustus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey.20210513.yaml',
+    'hyaena': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides.20210624.yaml',
+    'crocuta_crocuta': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides.20210624.yaml',
     'horse_wild': 'https://wildbookiarepository.azureedge.net/models/pie_v2.wildhorse.20210621.yaml',
+    'sousa_plumbea': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey.20210513.yaml',
+    'zebra_grevys+_canonical_': 'https://wildbookiarepository.azureedge.net/models/pie_v2.zebra_canonical.20210629.yaml',
+    'physeter_macrocephalus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
+    'whale_sperm+fluke': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
+    'whale_sperm+flukeold': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
 }
 
 MODELS = {
     'whalesharkcr': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark_cropped_model_20210315.pth.tar',
     'rhincodon_typus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_shark_cropped_model_20210315.pth.tar',
     'whale_grey': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_model_20210513.pth.tar',
+    'eschrichtius_robustus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_model_20210513.pth.tar',
+    'hyaena': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides_model.20210624.pth.tar',
+    'crocuta_crocuta': 'https://wildbookiarepository.azureedge.net/models/pie_v2.hyena_bothsides_model.20210624.pth.tar',
     'horse_wild': 'https://wildbookiarepository.azureedge.net/models/pie_v2.wildhorse_model_20210621.pth.tar',
+    'sousa_plumbea': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_model_20210513.pth.tar',
+    'zebra_grevys+_canonical_': 'https://wildbookiarepository.azureedge.net/models/pie_v2.zebra_canonical.20210629.pth.tar',
+    'physeter_macrocephalus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
+    'whale_sperm+fluke': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
+    'whale_sperm+flukeold': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
 }
+
+
+GLOBAL_EMBEDDING_CACHE = {}
 
 
 @register_ibs_method
@@ -97,13 +119,28 @@ def pie_v2_embedding(ibs, aid_list, config=None, use_depc=True):
         >>> assert abs(rank1 - expected_rank1) < 1e-2
 
     """
-    if use_depc:
-        config_map = {'config_path': config}
-        embeddings = ibs.depc_annot.get(
-            'PieTwoEmbedding', aid_list, 'embedding', config_map
-        )
-    else:
-        embeddings = pie_v2_compute_embedding(ibs, aid_list, config)
+    global GLOBAL_EMBEDDING_CACHE
+
+    dirty_aids = []
+    for aid in aid_list:
+        if aid not in GLOBAL_EMBEDDING_CACHE:
+            dirty_aids.append(aid)
+
+    if len(dirty_aids) > 0:
+        print('Computing %d non-cached embeddings' % (len(dirty_aids), ))
+        if use_depc:
+            config_map = {'config_path': config}
+            dirty_embeddings = ibs.depc_annot.get(
+                'PieTwoEmbedding', dirty_aids, 'embedding', config_map
+            )
+        else:
+            dirty_embeddings = pie_v2_compute_embedding(ibs, dirty_aids, config)
+
+        for dirty_aid, dirty_embedding in zip(dirty_aids, dirty_embeddings):
+            GLOBAL_EMBEDDING_CACHE[dirty_aid] = dirty_embedding
+
+    embeddings = ut.take(GLOBAL_EMBEDDING_CACHE, aid_list)
+
     return embeddings
 
 
@@ -124,7 +161,6 @@ class PieV2EmbeddingConfig(dt.Config):  # NOQA
 )
 @register_ibs_method
 def pie_v2_embedding_depc(depc, aid_list, config=None):
-    # ut.embed()
     ibs = depc.controller
     embs = pie_v2_compute_embedding(ibs, aid_list, config=config['config_path'])
     for aid, emb in zip(aid_list, embs):
@@ -166,6 +202,7 @@ class PieV2Config(dt.Config):  # NOQA
     def get_param_info_list(self):
         return [
             ut.ParamInfo('config_path', None),
+            ut.ParamInfo('use_knn', True, hideif=True),
         ]
 
 
@@ -258,7 +295,7 @@ class PieV2Request(dt.base.VsOneSimilarityRequest):
     coltypes=[float],
     configclass=PieV2Config,
     requestclass=PieV2Request,
-    fname='pie',
+    fname='pie_v2',
     rm_extern_on_delete=True,
     chunksize=None,
 )
@@ -268,21 +305,38 @@ def wbia_plugin_pie_v2(depc, qaid_list, daid_list, config):
     qaids = list(set(qaid_list))
     daids = list(set(daid_list))
 
-    assert len(qaids) == 1
-    qaid = qaids[0]
+    use_knn = config.get('use_knn', True)
 
-    pie_name_dists = ibs.pie_v2_predict_light(
-        qaid,
-        daids,
-        config['config_path'],
-    )
-    pie_name_scores = distance_dicts_to_name_score_dicts(pie_name_dists)
+    qaid_score_dict = {}
+    for qaid in tqdm.tqdm(qaids):
+        if use_knn:
+                pie_name_dists = ibs.pie_v2_predict_light(
+                    qaid,
+                    daids,
+                    config['config_path'],
+                )
+                pie_name_scores = distance_dicts_to_name_score_dicts(pie_name_dists)
 
-    aid_score_list = aid_scores_from_name_scores(ibs, pie_name_scores, daids)
-    aid_score_dict = dict(zip(daids, aid_score_list))
+                aid_score_list = aid_scores_from_name_scores(ibs, pie_name_scores, daids)
+                aid_score_dict = dict(zip(daids, aid_score_list))
 
-    for daid in daid_list:
-        daid_score = aid_score_dict.get(daid)
+                qaid_score_dict[qaid] = aid_score_dict
+        else:
+            pie_annot_distances = ibs.pie_v2_predict_light_distance(
+                qaid,
+                daids,
+                config['config_path'],
+            )
+            qaid_score_dict[qaid] = {}
+            for daid, pie_annot_distance in zip(daids, pie_annot_distances):
+                qaid_score_dict[qaid][daid] = distance_to_score(pie_annot_distance, norm=500.0)
+
+    for qaid, daid in zip(qaid_list, daid_list):
+        if qaid == daid:
+            daid_score = 0.0
+        else:
+            aid_score_dict = qaid_score_dict.get(qaid, {})
+            daid_score = aid_score_dict.get(daid)
         yield (daid_score,)
 
 
@@ -459,6 +513,19 @@ def pie_v2_predict_light(ibs, qaid, daid_list, config=None):
     return ans
 
 
+@register_ibs_method
+def pie_v2_predict_light_distance(ibs, qaid, daid_list, config=None):
+    assert len(daid_list) == len(set(daid_list))
+    db_embs = np.array(ibs.pie_v2_embedding(daid_list, config))
+    query_emb = np.array(ibs.pie_v2_embedding([qaid], config))
+
+    input1 = torch.Tensor(query_emb)
+    input2 = torch.Tensor(db_embs)
+    distmat = compute_distance_matrix(input1, input2)
+    distances = np.array(distmat[0])
+    return distances
+
+
 def _pie_accuracy(ibs, qaid, daid_list):
     daids = daid_list.copy()
     daids.remove(qaid)
@@ -557,9 +624,9 @@ def _name_dict(ibs, aid_list):
     return name_aids
 
 
-def distance_to_score(distance):
+def distance_to_score(distance, norm=2.0):
     # score = 1 / (1 + distance)
-    score = np.exp(-distance / 2.0)
+    score = np.exp(-distance / norm)
     return score
 
 
@@ -572,8 +639,6 @@ def distance_dicts_to_name_score_dicts(distance_dicts, conversion_func=distance_
 
 
 def aid_scores_from_name_scores(ibs, name_score_dict, daid_list):
-    # import utool as ut
-    # ut.embed()
     daid_name_list = list(_db_labels_for_pie(ibs, daid_list))
 
     name_count_dict = {

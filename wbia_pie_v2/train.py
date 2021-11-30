@@ -31,19 +31,7 @@ from models import build_model
 from datasets.datamanager import AnimalImageDataManager
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
-    )
-    parser.add_argument('--cfg', type=str, default='', help='path to config file')
-
-    parser.add_argument(
-        'opts',
-        default=None,
-        nargs=argparse.REMAINDER,
-        help='Modify config options using the command-line',
-    )
-    args = parser.parse_args()
+def train(args):
 
     cfg = get_default_config()
     cfg.use_gpu = torch.cuda.is_available()
@@ -116,4 +104,17 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument('--cfg', type=str, default='', help='path to config file')
+
+    parser.add_argument(
+        'opts',
+        default=None,
+        nargs=argparse.REMAINDER,
+        help='Modify config options using the command-line',
+    )
+    args = parser.parse_args()
+
+    train(args)

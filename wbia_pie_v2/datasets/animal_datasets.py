@@ -78,6 +78,26 @@ class GrayWhale(COCODataset):
         )
 
 
+class HyenaBothsides(COCODataset):
+    def __init__(self, **kwargs):
+        super(HyenaBothsides, self).__init__(
+            name='hyena_bothsides',
+            dataset_dir='/data/db/_ibsdb/_ibeis_cache/hyena_bothsides',
+            dataset_url=None,
+            split='train2021',
+            split_test='test2021',
+            crop=True,
+            resize=True,
+            imsize=256,
+            train_min_samples=3,
+            test_min_samples=3,
+            id_attr=['name', 'viewpoint'],
+            debug=False,
+            excluded_names='____',
+            **kwargs
+        )
+
+
 class WildHorseFace(COCODataset):
     def __init__(self, **kwargs):
         super(WildHorseFace, self).__init__(
