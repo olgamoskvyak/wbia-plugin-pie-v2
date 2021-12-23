@@ -1,5 +1,43 @@
 # -*- coding: utf-8 -*-
 from .coco_dataset import COCODataset
+import yaml
+import os
+
+
+# This dynamically creats a COCODataset object from looking at a config file
+class ConfigDataset(COCODataset):
+
+    def __init__(self, config_fpath, **kwargs):
+        conf = _read_and_validate_dataset_config(config_fpath)
+        # name is the config filename without extension or containing folders
+        id_attr = ['name']
+        if conf['data'].get('use_viewpoint', True):
+            id_attr.append('viewpoint')
+        mode = kwargs.get('mode', 'train')
+        super(ConfigDataset, self).__init__(
+            name=os.path.splitext(os.path.split(config_fpath)[1])[0],
+            dataset_url=conf['data'].get('dataset_url', None),
+            dataset_dir=conf['data']['coco_dir'],
+            split=conf['data'].get('split', f'{mode}2021'),
+            crop=conf['data'].get('crop', True),
+            resize=conf['data'].get('resize', True),
+            imsize=min(conf['data']['height'], conf['data']['width']),
+            train_min_samples=conf['data'].get('train_min_samples', 3),
+            test_min_samples=conf['data'].get('test_min_samples', 3),
+            viewpoint_list=conf['data'].get('viewpoint_list', ['left', 'right']),
+            debug=conf['data'].get('debug', False),
+            **kwargs
+        )
+
+
+def _read_and_validate_dataset_config(config_fpath):
+    with open(config_fpath, "r") as stream:
+        try:
+            conf = yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+    assert 'data' in conf and 'coco_dir' in conf['data'], 'Error: ConfigDataset needs data.coco_dir to be defined in config file.'
+    return conf
 
 
 class WhaleShark(COCODataset):
@@ -116,3 +154,5 @@ class WildHorseFace(COCODataset):
             excluded_names='____',
             **kwargs
         )
+
+

@@ -2,7 +2,7 @@ import subprocess
 import logging
 import argparse
 
-
+import os
 from os import listdir
 from os.path import isfile, join
 from pathlib import Path
@@ -10,6 +10,7 @@ from pathlib import Path
 
 STATUS_TRAINING = 'training'
 STATUS_COMPLETE = 'complete'
+
 
 def iter_train(args):
 
@@ -61,7 +62,6 @@ def try_train(config_path):
         logging.error(f'Hit an exception on {config_path} with args {training_command_args}')
 
 
-
 # TODO: write this! This method will discern if we've already trained a
 def trained_already(config_path):
     return (
@@ -69,10 +69,11 @@ def trained_already(config_path):
         os.path.isfile(status_touchfile_path(config_path, STATUS_COMPLETE))
     )
 
+
 # this exists to help me standardize these as much as anything
 def status_touchfile_path(config_path, status):
     tfile_path = f'{config_path}.{status}'
-
+    return tfile_path
 
 
 if __name__ == '__main__':
