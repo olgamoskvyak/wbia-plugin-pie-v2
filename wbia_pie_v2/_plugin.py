@@ -54,6 +54,7 @@ CONFIGS = {
     'physeter_macrocephalus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
     'whale_sperm+fluke': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
     'whale_sperm+flukeold': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
+    'snow_leopard': 'https://wildbookiarepository.azureedge.net/models/pie_v2.snow_rc2.yaml',
 }
 
 MODELS = {
@@ -69,6 +70,7 @@ MODELS = {
     'physeter_macrocephalus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
     'whale_sperm+fluke': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
     'whale_sperm+flukeold': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
+    'snow_leopard': 'https://wildbookiarepository.azureedge.net/models/pie_v2.snow_rc2.pth.tar',
 }
 
 
