@@ -4,6 +4,9 @@ from .animal_datasets import WhaleShark, WhaleSharkCropped, MantaRayCropped
 from .animal_datasets import GrayWhale
 from .animal_datasets import HyenaBothsides
 from .animal_datasets import WildHorseFace
+from .animal_datasets import Zebra
+from .animal_datasets import Cachalot, CachalotSubsample
+from .animal_datasets import ConfigDataset
 from .animal_wbia import AnimalNameWbiaDataset  # noqa: F401
 
 
@@ -14,6 +17,10 @@ __image_datasets = {
     'graywhale': GrayWhale,
     'hyena_bothsides': HyenaBothsides,
     'wildhorse_face': WildHorseFace,
+    'zebra': Zebra,
+    'cachalot': Cachalot,
+    'cachalot_subsample': CachalotSubsample,
+    'config_dataset': ConfigDataset,
 }
 
 

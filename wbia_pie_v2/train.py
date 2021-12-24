@@ -58,7 +58,10 @@ def train(args):
     if cfg.use_gpu:
         torch.backends.cudnn.benchmark = True
 
-    datamanager = AnimalImageDataManager(**imagedata_kwargs(cfg))
+    print('Making datamanger:')
+    datamanager_args = imagedata_kwargs(cfg)
+    datamanager_args['config_fpath'] = args.cfg
+    datamanager = AnimalImageDataManager(**datamanager_args)
 
     print('Building model: {}'.format(cfg.model.name))
     model = build_model(
