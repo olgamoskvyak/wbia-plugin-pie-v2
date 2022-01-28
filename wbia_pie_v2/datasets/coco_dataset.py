@@ -225,7 +225,7 @@ class COCODataset(ImageDataset):
         gt_db = []
         for index in image_set_index:
             img_anns = imgToAnns[index]
-            image_path = self._get_image_path(imgs[index]['file_name'])
+            image_path = self._get_image_path(imgs[index]['file_name'], split)
             gt_db.extend(self._load_image_annots(img_anns, image_path, uuid2view))
         return gt_db
 
@@ -248,13 +248,13 @@ class COCODataset(ImageDataset):
             )
         return rec
 
-    def _get_image_path(self, filename):
+    def _get_image_path(self, filename, split):
         """ Get full path to image in COCO annotations by image filename """
         image_path = osp.join(
             self.dataset_dir_orig,
             '{}.coco'.format(self.name),
             'images',
-            self.split,
+            split,
             filename,
         )
         return image_path
