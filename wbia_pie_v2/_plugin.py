@@ -54,6 +54,7 @@ CONFIGS = {
     'physeter_macrocephalus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
     'whale_sperm+fluke': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
     'whale_sperm+flukeold': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
+    'snow_leopard': 'https://wildbookiarepository.azureedge.net/models/pie_v2.snow_rc2.yaml',
 }
 
 MODELS = {
@@ -69,6 +70,7 @@ MODELS = {
     'physeter_macrocephalus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
     'whale_sperm+fluke': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
     'whale_sperm+flukeold': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
+    'snow_leopard': 'https://wildbookiarepository.azureedge.net/models/pie_v2.snow_rc2.pth.tar',
 }
 
 
@@ -613,15 +615,6 @@ def _db_labels_for_pie(ibs, daid_list):
     db_labels = np.array(db_labels)
     return db_labels
 
-
-def _name_dict(ibs, aid_list):
-    names = ibs.get_annot_name_rowids(aid_list)
-    from collections import defaultdict
-
-    name_aids = defaultdict(list)
-    for aid, name in zip(aid_list, names):
-        name_aids[name].append(aid)
-    return name_aids
 
 
 def distance_to_score(distance, norm=2.0):

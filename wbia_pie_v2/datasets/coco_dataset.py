@@ -68,7 +68,8 @@ class COCODataset(ImageDataset):
         self.split = split
         self.split_test = split_test
         self.root = osp.abspath(osp.expanduser(root))
-        self.dataset_dir_orig = osp.join(self.root, dataset_dir, 'original')
+        self.dataset_dir = dataset_dir
+        self.dataset_dir_orig = osp.join(self.root, dataset_dir)
         self.dataset_dir_proc = osp.join(self.root, dataset_dir, 'processed')
         self.crop = crop
         self.resize = resize
@@ -182,10 +183,18 @@ class COCODataset(ImageDataset):
         """ Get database from COCO anntations """
         ann_file = osp.join(
             self.dataset_dir_orig,
-            '{}.coco'.format(self.name),
+#            '{}.coco'.format(self.name),
             'annotations',
             'instances_{}.json'.format(split),
         )
+        if not osp.exists(ann_file):
+            # below path is used on automated datasets
+            ann_file = osp.join(
+                self.dataset_dir,
+                'annotations',
+                'instances_{}.json'.format(split),
+            )
+
         dataset = json.load(open(ann_file, 'r'))
 
         # Get image metadata
@@ -252,7 +261,7 @@ class COCODataset(ImageDataset):
         """ Get full path to image in COCO annotations by image filename """
         image_path = osp.join(
             self.dataset_dir_orig,
-            '{}.coco'.format(self.name),
+#            '{}.coco'.format(self.name),
             'images',
             split,
             filename,
