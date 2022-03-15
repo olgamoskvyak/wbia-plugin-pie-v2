@@ -1,0 +1,47 @@
+model:
+  name: 'resnet50_fc512'
+  pretrained: True
+  num_train_classes: 335
+
+data:
+  type: 'image'
+  source: 'rw_laterals'
+  height: 300
+  width: 300
+  transforms_train: ['resize', 'random_affine']
+  transforms_test: ['resize']
+  version: 'v1'
+
+loss:
+  name: 'triplet'
+  triplet:
+    weight_t: 1.
+    weight_x: 1.
+  softmax:
+    label_smooth: True
+
+sampler:
+  num_instances: 3
+  num_copies: 4
+
+train:
+  optim: 'adam'
+  lr: 0.00001
+  max_epoch: 1000
+  batch_size: 72
+  fixbase_epoch: 1
+  open_layers: ['fc', 'classifier']
+  lr_scheduler: 'multi_step'
+  stepsize: [700]
+
+test:
+  batch_size: 100
+  dist_metric: 'euclidean'
+  normalize_feature: False
+  evaluate: False
+  eval_freq: 10
+  rerank: False
+  ranks: [1, 5, 12, 20]
+  visrank_topk: 5
+  visrank_resize: False
+  fliplr: False

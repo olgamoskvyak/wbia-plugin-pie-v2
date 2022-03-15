@@ -6,6 +6,7 @@ from .animal_datasets import HyenaBothsides
 from .animal_datasets import WildHorseFace
 # from .animal_datasets import Zebra
 # from .animal_datasets import Cachalot, CachalotSubsample
+from .animal_datasets import RW_Laterals
 from .animal_datasets import ConfigDataset
 from .animal_wbia import AnimalNameWbiaDataset  # noqa: F401
 
@@ -20,6 +21,7 @@ __image_datasets = {
     # 'zebra': Zebra,
     # 'cachalot': Cachalot,
     # 'cachalot_subsample': CachalotSubsample,
+    'rw_laterals': RW_Laterals,
     'config_dataset': ConfigDataset,
 }
 

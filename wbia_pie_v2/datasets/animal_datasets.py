@@ -156,3 +156,23 @@ class WildHorseFace(COCODataset):
         )
 
 
+class RW_Laterals(COCODataset):
+    def __init__(self, **kwargs):
+        super(RW_Laterals, self).__init__(
+            name='rw_laterals_v2',
+            dataset_dir='rw_laterals_v2',
+            dataset_url='',
+            split='train2021',
+            split_test='test2021',
+            crop=True,
+            flip_test=False,
+            resize=True,
+            imsize=256,
+            train_min_samples=1,
+            test_min_samples=2,
+            id_attr=['name', 'viewpoint'],
+            viewpoint_list=['left', 'right'],
+            debug=False,
+            excluded_names='____',
+            **kwargs
+        )
