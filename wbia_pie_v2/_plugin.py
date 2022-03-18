@@ -36,9 +36,10 @@ register_preproc_annot = controller_inject.register_preprocs['annot']
 DEMOS = {
     'whalesharkcr': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_shark_cropped_demo.zip',
     'rhincodon_typus': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_shark_cropped_demo.zip',
-    'whale_grey': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_demo.zip',
-    'eschrichtius_robustus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_demo.zip',
-    'horse_wild': 'https://wildbookiarepository.azureedge.net/models/pie_v2.wildhorses_demo.zip',
+    'whale_grey': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_grey_demo.zip',
+    'eschrichtius_robustus': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_grey_demo.zip',
+    'horse_wild': 'https://wildbookiarepository.azureedge.net/data/pie_v2.wildhorses_demo.zip',
+    'right_whale+head_lateral': 'https://wildbookiarepository.azureedge.net/data/models/pie_v2.rw_laterals_demo.zip',
 }
 
 CONFIGS = {
@@ -56,6 +57,11 @@ CONFIGS = {
     'whale_sperm+flukeold': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
     'snow_leopard': 'https://wildbookiarepository.azureedge.net/models/pie_v2.snow_rc2.yaml',
     'panthera_uncia': 'https://wildbookiarepository.azureedge.net/models/pie_v2.snow_rc2.yaml',
+    'right_whale+head_lateral': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.yaml',
+    'right_whale+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.yaml',
+    'right_whale_head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.yaml',
+    'eubalaena_australis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.yaml',
+    'eubalaena_glacialis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.yaml',
 }
 
 MODELS = {
@@ -73,6 +79,11 @@ MODELS = {
     'whale_sperm+flukeold': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
     'snow_leopard': 'https://wildbookiarepository.azureedge.net/models/pie_v2.snow_rc2.pth.tar',
     'panthera_uncia': 'https://wildbookiarepository.azureedge.net/models/pie_v2.snow_rc2.pth.tar',
+    'right_whale+head_lateral': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.pth.tar',
+    'right_whale+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.pth.tar',
+    'right_whale_head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.pth.tar',
+    'eubalaena_australis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.pth.tar',
+    'eubalaena_glacialis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.pth.tar',
 }
 
 
