@@ -63,6 +63,8 @@ CONFIGS = {
     'eubalaena_australis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.yaml',
     'eubalaena_glacialis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.yaml',
     'lion+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.yaml',
+    'lioness+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.yaml',
+    'lion_general+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.yaml',
     'panthera_leo': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.yaml',
     'panthera_leo+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.yaml',
 }
@@ -88,6 +90,8 @@ MODELS = {
     'eubalaena_australis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.pth.tar',
     'eubalaena_glacialis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.pth.tar',
     'lion+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.pth.tar',
+    'lioness+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.pth.tar',
+    'lion_general+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.pth.tar',
     'panthera_leo': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.pth.tar',
     'panthera_leo+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.pth.tar',
 }
