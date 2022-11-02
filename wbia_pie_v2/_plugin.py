@@ -69,6 +69,7 @@ CONFIGS = {
     'panthera_leo+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.yaml',
     'whale_fin+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.yaml',
     'whale_fin': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.yaml',
+    'harbour_porpoise+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.yaml',
     'balaenoptera_physalus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.yaml',
 }
 
@@ -99,6 +100,7 @@ MODELS = {
     'panthera_leo+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.pth.tar',
     'whale_fin+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.pth.tar',
     'whale_fin': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.pth.tar',
+    'harbour_porpoise+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.pth.tar',
     'balaenoptera_physalus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.pth.tar',
 }
 
