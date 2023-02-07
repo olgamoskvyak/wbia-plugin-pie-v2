@@ -76,6 +76,8 @@ CONFIGS = {
     'balaenoptera_physalus+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.yaml',
     'phocoena_phocoena': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.yaml',
     'phocoena_phocoena+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.yaml',
+    'tursiops_truncatus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'dolphin_whitesided+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
 }
 
 MODELS = {
@@ -112,6 +114,8 @@ MODELS = {
     'balaenoptera_physalus+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.pth.tar',
     'phocoena_phocoena': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.pth.tar',
     'phocoena_phocoena+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.pth.tar',
+    'tursiops_truncatus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'dolphin_whitesided+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
 }
 
 
