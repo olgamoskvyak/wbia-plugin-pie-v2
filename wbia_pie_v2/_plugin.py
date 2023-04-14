@@ -79,6 +79,7 @@ CONFIGS = {
     'tursiops_truncatus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
     'dolphin_whitesided+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
     'white_shark+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'spinner_dolphin': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
 }
 
 MODELS = {
@@ -118,6 +119,7 @@ MODELS = {
     'tursiops_truncatus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
     'dolphin_whitesided+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
     'white_shark+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'spinner_dolphin': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
 }
 
 
