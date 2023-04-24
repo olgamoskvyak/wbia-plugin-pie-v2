@@ -81,7 +81,12 @@ CONFIGS = {
     'white_shark+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
     'spinner_dolphin': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
     'stenella_longirostris': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
-    'sotalia_guianensis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'sotalia_guianensis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml', 
+    'short_fin_pilot_whale+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'globicephala_melas': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'pilot_whale+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'globicephala_macrorhynchus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    
 }
 
 MODELS = {
@@ -124,6 +129,10 @@ MODELS = {
     'spinner_dolphin': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
     'stenella_longirostris': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
     'sotalia_guianensis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'short_fin_pilot_whale+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'globicephala_melas': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'pilot_whale+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'globicephala_macrorhynchus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
 }
 
 
