@@ -309,7 +309,7 @@ def get_match_results(depc, qaid_list, daid_list, score_list, config):
         match_result._update_unique_nid_index()
 
         grouped_annot_scores = vt.apply_grouping(annot_scores, match_result.name_groupxs)
-        name_scores = np.array([np.sum(dists) for dists in grouped_annot_scores])
+        name_scores = np.array([np.max(dists) for dists in grouped_annot_scores])
         match_result.set_cannonical_name_score(annot_scores, name_scores)
         yield match_result
 
@@ -374,14 +374,14 @@ def wbia_plugin_pie_v2(depc, qaid_list, daid_list, config):
     qaid_score_dict = {}
     for qaid in tqdm.tqdm(qaids):
         if use_knn:
-                pie_name_dists = ibs.pie_v2_predict_light(
+                pie_dists = ibs.pie_v2_predict_light(
                     qaid,
                     daids,
                     config['config_path'],
                 )
-                pie_name_scores = distance_dicts_to_name_score_dicts(pie_name_dists)
+                pie_scores = distance_dicts_to_score_dicts(pie_dists)
 
-                aid_score_list = aid_scores_from_name_scores(ibs, pie_name_scores, daids)
+                aid_score_list = aid_scores_from_score_dict(pie_scores, daids)
                 aid_score_dict = dict(zip(daids, aid_score_list))
 
                 qaid_score_dict[qaid] = aid_score_dict
@@ -568,10 +568,14 @@ def wbia_pie_v2_test_ibs(demo_db_url, species, subset):
 
 
 @register_ibs_method
-def pie_v2_predict_light(ibs, qaid, daid_list, config=None):
+def pie_v2_predict_light(ibs, qaid, daid_list, config=None, use_names=False):
     db_embs = np.array(ibs.pie_v2_embedding(daid_list, config))
-    db_labels = np.array(ibs.get_annot_name_texts(daid_list, config))
     query_emb = np.array(ibs.pie_v2_embedding([qaid], config))
+
+    if use_names:
+        db_labels = np.array(ibs.get_annot_name_texts(daid_list, config))
+    else:
+        db_labels = np.array(daid_list)
 
     ans = pred_light(query_emb, db_embs, db_labels)
     return ans
@@ -663,18 +667,11 @@ def pie_v2_new_accuracy(ibs, aid_list, min_sights=3, max_sights=10):
     return accuracy
 
 
-# The following functions are copied from PIE v1 because these functions
-# are agnostic tot eh method of computing embeddings:
-# https://github.com/WildMeOrg/wbia-plugin-pie/wbia_pie/_plugin.py
 def _db_labels_for_pie(ibs, daid_list):
-    db_labels = ibs.get_annot_name_texts(daid_list)
-    db_auuids = ibs.get_annot_semantic_uuids(daid_list)
-    # later we must know which db_labels are for single auuids, hence prefix
-    db_auuids = [UNKNOWN + str(auuid) for auuid in db_auuids]
-    db_labels = [
-        lab if lab is not UNKNOWN else auuid for lab, auuid in zip(db_labels, db_auuids)
-    ]
+
+    db_labels = ibs.get_annot_name_texts(daid_list, distinguish_unknowns=True)
     db_labels = np.array(db_labels)
+
     return db_labels
 
 
@@ -684,8 +681,11 @@ def distance_to_score(distance, norm=2.0):
     score = np.exp(-distance / norm)
     return score
 
+def aid_scores_from_score_dict(name_score_dict, daid_list):
+    daid_scores = [name_score_dict.get(daid, 0) for daid in daid_list]
+    return daid_scores
 
-def distance_dicts_to_name_score_dicts(distance_dicts, conversion_func=distance_to_score):
+def distance_dicts_to_score_dicts(distance_dicts, conversion_func=distance_to_score):
     score_dicts = distance_dicts.copy()
     name_score_dicts = {}
     for entry in score_dicts:
