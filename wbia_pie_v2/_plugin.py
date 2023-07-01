@@ -36,9 +36,10 @@ register_preproc_annot = controller_inject.register_preprocs['annot']
 DEMOS = {
     'whalesharkcr': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_shark_cropped_demo.zip',
     'rhincodon_typus': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_shark_cropped_demo.zip',
-    'whale_grey': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_demo.zip',
-    'eschrichtius_robustus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.whale_grey_demo.zip',
-    'horse_wild': 'https://wildbookiarepository.azureedge.net/models/pie_v2.wildhorses_demo.zip',
+    'whale_grey': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_grey_demo.zip',
+    'eschrichtius_robustus': 'https://wildbookiarepository.azureedge.net/data/pie_v2.whale_grey_demo.zip',
+    'horse_wild': 'https://wildbookiarepository.azureedge.net/data/pie_v2.wildhorses_demo.zip',
+    'right_whale+head_lateral': 'https://wildbookiarepository.azureedge.net/data/models/pie_v2.rw_laterals_demo.zip',
 }
 
 CONFIGS = {
@@ -55,6 +56,49 @@ CONFIGS = {
     'whale_sperm+fluke': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
     'whale_sperm+flukeold': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.yaml',
     'snow_leopard': 'https://wildbookiarepository.azureedge.net/models/pie_v2.snow_rc2.yaml',
+    'panthera_uncia': 'https://wildbookiarepository.azureedge.net/models/pie_v2.snow_rc2.yaml',
+    'right_whale+head_lateral': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.yaml',
+    'right_whale+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.yaml',
+    'right_whale_head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.yaml',
+    'eubalaena_australis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.yaml',
+    'eubalaena_glacialis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.yaml',
+    'lion+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.yaml',
+    'lioness+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.yaml',
+    'lion_general+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.yaml',
+    'cougar+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.yaml',
+    'puma_concolor': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.yaml',
+    'panthera_leo': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.yaml',
+    'panthera_leo+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.yaml',
+    'whale_fin+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.yaml',
+    'balaenoptera_physalus+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.yaml',
+    'whale_fin': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.yaml',
+    'harbour_porpoise+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.yaml',
+    'harbour_porpoise': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.yaml',
+    'balaenoptera_physalus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.yaml',
+    'balaenoptera_physalus+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.yaml',
+    'phocoena_phocoena': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.yaml',
+    'phocoena_phocoena+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.yaml',
+    'tursiops_truncatus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'dolphin_bottlenose+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'dolphin_bottlenose': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'dolphin_whitesided+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'white_shark+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'spinner_dolphin': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'stenella_longirostris': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'sotalia_guianensis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml', 
+    'short_fin_pilot_whale+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'globicephala_melas': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'pilot_whale+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'globicephala_macrorhynchus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'globicephala_melas': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'short_fin_pilot_whale+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'hyperoodon_ampullatus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'whale_humpback+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'lagenodelphis_hosei': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.yaml',
+    'whale_minke+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.yaml',
+    'balaenoptera_acutorostrata+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.yaml',
+    'whale_fin': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.yaml',
+    'whale_minke': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.yaml'
 }
 
 MODELS = {
@@ -71,8 +115,49 @@ MODELS = {
     'whale_sperm+fluke': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
     'whale_sperm+flukeold': 'https://wildbookiarepository.azureedge.net/models/pie_v2.sperm_whale_fluke.20211006.pth.tar',
     'snow_leopard': 'https://wildbookiarepository.azureedge.net/models/pie_v2.snow_rc2.pth.tar',
+    'panthera_uncia': 'https://wildbookiarepository.azureedge.net/models/pie_v2.snow_rc2.pth.tar',
+    'right_whale+head_lateral': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.pth.tar',
+    'right_whale+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.pth.tar',
+    'right_whale_head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.pth.tar',
+    'eubalaena_australis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.pth.tar',
+    'eubalaena_glacialis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.rw_laterals.20220315.pth.tar',
+    'lion+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.pth.tar',
+    'cougar+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.pth.tar',
+    'puma_concolor': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.pth.tar',
+    'lioness+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.pth.tar',
+    'lion_general+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.pth.tar',
+    'panthera_leo': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.pth.tar',
+    'panthera_leo+head': 'https://wildbookiarepository.azureedge.net/models/pie_v2.lion_head_rc1.pth.tar',
+    'whale_fin+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.pth.tar',
+    'balaenoptera_physalus+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.pth.tar',
+    'whale_fin': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.pth.tar',
+    'harbour_porpoise+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.pth.tar',
+    'harbour_porpoise': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.pth.tar',
+    'balaenoptera_physalus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.pth.tar',
+    'balaenoptera_physalus+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.pth.tar',
+    'phocoena_phocoena': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.pth.tar',
+    'phocoena_phocoena+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.pth.tar',
+    'tursiops_truncatus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'dolphin_bottlenose+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'dolphin_bottlenose': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'dolphin_whitesided+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'white_shark+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'spinner_dolphin': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'stenella_longirostris': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'sotalia_guianensis': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'short_fin_pilot_whale+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'globicephala_melas': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'pilot_whale+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'globicephala_macrorhynchus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'globicephala_melas': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'short_fin_pilot_whale+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'hyperoodon_ampullatus': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'whale_humpback+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'lagenodelphis_hosei': 'https://wildbookiarepository.azureedge.net/models/pie_v2.bottlenose_fin.2023.02.07.pth.tar',
+    'whale_minke+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.pth.tar',
+    'balaenoptera_acutorostrata+fin_dorsal': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_dorsal.2022.10.25.pth.tar',
+    'whale_minke': 'https://wildbookiarepository.azureedge.net/models/pie_v2.fin_whale_body.2022.10.21.pth.tar'
 }
-
 
 GLOBAL_EMBEDDING_CACHE = {}
 
@@ -247,7 +332,7 @@ def get_match_results(depc, qaid_list, daid_list, score_list, config):
         match_result._update_unique_nid_index()
 
         grouped_annot_scores = vt.apply_grouping(annot_scores, match_result.name_groupxs)
-        name_scores = np.array([np.sum(dists) for dists in grouped_annot_scores])
+        name_scores = np.array([np.max(dists) for dists in grouped_annot_scores])
         match_result.set_cannonical_name_score(annot_scores, name_scores)
         yield match_result
 
@@ -312,14 +397,14 @@ def wbia_plugin_pie_v2(depc, qaid_list, daid_list, config):
     qaid_score_dict = {}
     for qaid in tqdm.tqdm(qaids):
         if use_knn:
-                pie_name_dists = ibs.pie_v2_predict_light(
+                pie_dists = ibs.pie_v2_predict_light(
                     qaid,
                     daids,
                     config['config_path'],
                 )
-                pie_name_scores = distance_dicts_to_name_score_dicts(pie_name_dists)
+                pie_scores = distance_dicts_to_score_dicts(pie_dists)
 
-                aid_score_list = aid_scores_from_name_scores(ibs, pie_name_scores, daids)
+                aid_score_list = aid_scores_from_score_dict(pie_scores, daids)
                 aid_score_dict = dict(zip(daids, aid_score_list))
 
                 qaid_score_dict[qaid] = aid_score_dict
@@ -506,10 +591,14 @@ def wbia_pie_v2_test_ibs(demo_db_url, species, subset):
 
 
 @register_ibs_method
-def pie_v2_predict_light(ibs, qaid, daid_list, config=None):
+def pie_v2_predict_light(ibs, qaid, daid_list, config=None, use_names=False):
     db_embs = np.array(ibs.pie_v2_embedding(daid_list, config))
-    db_labels = np.array(ibs.get_annot_name_texts(daid_list, config))
     query_emb = np.array(ibs.pie_v2_embedding([qaid], config))
+
+    if use_names:
+        db_labels = np.array(ibs.get_annot_name_texts(daid_list, config))
+    else:
+        db_labels = np.array(daid_list)
 
     ans = pred_light(query_emb, db_embs, db_labels)
     return ans
@@ -601,18 +690,11 @@ def pie_v2_new_accuracy(ibs, aid_list, min_sights=3, max_sights=10):
     return accuracy
 
 
-# The following functions are copied from PIE v1 because these functions
-# are agnostic tot eh method of computing embeddings:
-# https://github.com/WildMeOrg/wbia-plugin-pie/wbia_pie/_plugin.py
 def _db_labels_for_pie(ibs, daid_list):
-    db_labels = ibs.get_annot_name_texts(daid_list)
-    db_auuids = ibs.get_annot_semantic_uuids(daid_list)
-    # later we must know which db_labels are for single auuids, hence prefix
-    db_auuids = [UNKNOWN + str(auuid) for auuid in db_auuids]
-    db_labels = [
-        lab if lab is not UNKNOWN else auuid for lab, auuid in zip(db_labels, db_auuids)
-    ]
+
+    db_labels = ibs.get_annot_name_texts(daid_list, distinguish_unknowns=True)
     db_labels = np.array(db_labels)
+
     return db_labels
 
 
@@ -622,8 +704,11 @@ def distance_to_score(distance, norm=2.0):
     score = np.exp(-distance / norm)
     return score
 
+def aid_scores_from_score_dict(name_score_dict, daid_list):
+    daid_scores = [name_score_dict.get(daid, 0) for daid in daid_list]
+    return daid_scores
 
-def distance_dicts_to_name_score_dicts(distance_dicts, conversion_func=distance_to_score):
+def distance_dicts_to_score_dicts(distance_dicts, conversion_func=distance_to_score):
     score_dicts = distance_dicts.copy()
     name_score_dicts = {}
     for entry in score_dicts:
